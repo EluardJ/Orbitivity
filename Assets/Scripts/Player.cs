@@ -12,16 +12,17 @@ public class Player : MonoBehaviour
 {
 
     #region Variables
-    private float movementSpeed;
+    private Rigidbody2D rb2D;
     private float buttonTimer;
     [SerializeField] private float maxTimer = 2;
+    [SerializeField] private float movementSpeedModifier = 3;
     #endregion
 
     #region Unity's functions
     // Start is called before the first frame update
     void Start()
     {
-
+        rb2D = gameObject.GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -34,15 +35,16 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            if(buttonTimer > 2f)
+            if(buttonTimer > maxTimer)
             {
-                buttonTimer = 2f;
+                buttonTimer = maxTimer;
             }
-            movementSpeed = buttonTimer;
+            Debug.Log(buttonTimer);
+            rb2D.AddForce(transform.right * buttonTimer * movementSpeedModifier, ForceMode2D.Impulse);
+
             buttonTimer = 0f;
         }
 
-        transform.Translate(Vector3.up * movementSpeed * Time.deltaTime);
     }
     #endregion
 

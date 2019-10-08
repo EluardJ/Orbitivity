@@ -13,7 +13,8 @@ public class Player : MonoBehaviour
 
     #region Variables
     private Rigidbody2D rb2D;
-    private bool orbitalMode = true;
+    private string mode = "orbital";
+    private Vector2 moveDirection;
     private GameObject orbitalPlanet;
     private Vector3 orbitOrigin;
     private Vector3 orbitAxis;
@@ -35,6 +36,14 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        moveDirection = rb2D.velocity;
+        if (moveDirection != Vector2.zero)
+        {
+            float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
+            transform.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        }
+
+
         if (Input.GetKey(KeyCode.Space))
         {
             buttonTimer += Time.deltaTime;
@@ -42,27 +51,21 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            if(orbitalMode == true)
+            if (mode == "orbital")
             {
-                orbitalMode = false;
+                mode = "moving";
+                rb2D.AddForce(transform.right * Mathf.Clamp(buttonTimer, 0, maxTimer) * movementSpeedModifier, ForceMode2D.Impulse);
+                Debug.Log(Mathf.Clamp(buttonTimer, 0, maxTimer));
             }
-
-            if (buttonTimer > maxTimer)
-            {
-                buttonTimer = maxTimer;
-            }
-            Debug.Log(buttonTimer);
-            rb2D.AddForce(transform.right * buttonTimer * movementSpeedModifier, ForceMode2D.Impulse);
 
             buttonTimer = 0f;
         }
 
-        if (orbitalMode == true)
+        if (mode == "orbital")
         {
             transform.RotateAround(orbitOrigin, orbitAxis, Time.deltaTime * movementSpeedModifier * 10);
         }
 
-        Debug.Log(rb2D.velocity);
     }
     #endregion
 

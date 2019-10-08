@@ -13,6 +13,10 @@ public class Player : MonoBehaviour
 
     #region Variables
     private Rigidbody2D rb2D;
+    private bool orbitalMode = true;
+    private GameObject orbitalPlanet;
+    private Vector3 orbitOrigin;
+    private Vector3 orbitAxis;
     private float buttonTimer;
     [SerializeField] private float maxTimer = 2;
     [SerializeField] private float movementSpeedModifier = 3;
@@ -23,6 +27,9 @@ public class Player : MonoBehaviour
     void Start()
     {
         rb2D = gameObject.GetComponent<Rigidbody2D>();
+        orbitalPlanet = GameObject.Find("OrbitPlanet");
+        orbitOrigin = orbitalPlanet.transform.position;
+        orbitAxis = new Vector3(0, 0, 1);
     }
 
     // Update is called once per frame
@@ -35,7 +42,12 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            if(buttonTimer > maxTimer)
+            if(orbitalMode == true)
+            {
+                orbitalMode = false;
+            }
+
+            if (buttonTimer > maxTimer)
             {
                 buttonTimer = maxTimer;
             }
@@ -45,6 +57,12 @@ public class Player : MonoBehaviour
             buttonTimer = 0f;
         }
 
+        if (orbitalMode == true)
+        {
+            transform.RotateAround(orbitOrigin, orbitAxis, Time.deltaTime * movementSpeedModifier * 10);
+        }
+
+        Debug.Log(rb2D.velocity);
     }
     #endregion
 

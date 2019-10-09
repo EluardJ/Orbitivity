@@ -7,6 +7,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
@@ -23,6 +24,8 @@ public class Player : MonoBehaviour
     private float currentSpeed = 7;
     [SerializeField] private float maxTimer = 2;
     [SerializeField] private float movementSpeedModifier = 3;
+
+    public Slider boostSlider;
     #endregion
 
     #region Unity's functions
@@ -131,6 +134,9 @@ public class Player : MonoBehaviour
         {
             //charges the timer
             buttonTimer += Time.deltaTime;
+
+            //updates the BoostSlider
+            boostSlider.value = (Mathf.Clamp(buttonTimer, 0f, maxTimer) / maxTimer) * 100;
         }
 
         if (Input.GetKeyUp(KeyCode.Space))
@@ -139,6 +145,7 @@ public class Player : MonoBehaviour
             {
                 //launches the ship, going into moving mode
                 mode = "moving";
+                boostSlider.value = 0;
                 rb2D.AddForce(transform.right * Mathf.Clamp(buttonTimer, 0, maxTimer) * Mathf.Abs(movementSpeedModifier), ForceMode2D.Impulse);
                 Debug.Log(Mathf.Clamp(buttonTimer, 0, maxTimer));
             }

@@ -41,29 +41,11 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(rb2D.velocity.magnitude);
+        //Debug.Log(rb2D.velocity.magnitude);
 
         UsingSpaceKey();
 
-        if (mode == "in gravity field")
-        // determine if the ship is going near or away the current planet
-        {
-            float distanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
-
-            if (distanceToPlanet > lastDistanceToPlanet)
-            {
-                //enter orbital mode if the conditions are met
-                currentSpeed = rb2D.velocity.magnitude;
-                rb2D.velocity = Vector2.zero;
-                nearPlanet.GetComponent<PointEffector2D>().enabled = false;
-                distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
-
-                mode = "orbital";
-            }
-
-            lastDistanceToPlanet = distanceToPlanet;
-        }
-
+        InGravityField();
     }
 
     private void FixedUpdate()
@@ -83,7 +65,7 @@ public class Player : MonoBehaviour
         orbitOrigin = nearPlanet.transform.position;
         lastDistanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
 
-        if(Vector2.SignedAngle(rb2D.velocity, (transform.position - orbitOrigin)) > 0)
+        if (Vector2.SignedAngle(rb2D.velocity, (transform.position - orbitOrigin)) > 0)
         {
             movementSpeedModifier = -Mathf.Abs(movementSpeedModifier);
         }
@@ -93,9 +75,15 @@ public class Player : MonoBehaviour
         }
     }
 
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        AdjustGravityFieldScale();
+    }
+
     private void OnTriggerExit2D(Collider2D other)
     {
         other.GetComponent<PointEffector2D>().enabled = true;
+        other.transform.GetChild(1).transform.localScale = Vector3.one;
     }
 
     #endregion
@@ -152,6 +140,38 @@ public class Player : MonoBehaviour
 
             buttonTimer = 0f;
         }
+    }
+
+    private void InGravityField()
+    {
+        if (mode == "in gravity field")
+        // determine if the ship is going near or away the current planet
+        {
+            float distanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
+
+            if (distanceToPlanet > lastDistanceToPlanet)
+            {
+                //enter orbital mode if the conditions are met
+                currentSpeed = rb2D.velocity.magnitude;
+                rb2D.velocity = Vector2.zero;
+                nearPlanet.GetComponent<PointEffector2D>().enabled = false;
+                distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
+
+                mode = "orbital";
+            }
+
+            lastDistanceToPlanet = distanceToPlanet;
+
+            AdjustGravityFieldScale();
+        }
+    }
+
+    private void AdjustGravityFieldScale()
+    //change the radius of the sprite of the gravity field
+    {
+        float distRatio = Vector2.Distance(transform.position, orbitOrigin) / nearPlanet.GetComponent<CircleCollider2D>().radius;
+        Transform gravFieldNearPlanet = nearPlanet.transform.GetChild(1);
+        gravFieldNearPlanet.transform.localScale = new Vector3(distRatio, distRatio);
     }
 
     #endregion

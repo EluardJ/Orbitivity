@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
 
     #region Variables
     private Rigidbody2D rb2D;
-    private string mode = "orbital";
+    public string mode = "orbital";
     private Vector2 moveDirection;
     private GameObject nearPlanet;
     private float lastDistanceToPlanet;
@@ -169,7 +169,7 @@ public class Player : MonoBehaviour
     private void AdjustGravityFieldScale()
     //change the radius of the sprite of the gravity field
     {
-        float distRatio = Vector2.Distance(transform.position, orbitOrigin) / nearPlanet.GetComponent<CircleCollider2D>().radius;
+        float distRatio = Mathf.Clamp(Vector2.Distance(transform.position, orbitOrigin) / nearPlanet.GetComponent<CircleCollider2D>().radius, 0, 1);
         Transform gravFieldNearPlanet = nearPlanet.transform.GetChild(1);
         gravFieldNearPlanet.transform.localScale = new Vector3(distRatio, distRatio);
     }

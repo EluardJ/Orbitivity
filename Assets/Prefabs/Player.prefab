@@ -46,6 +46,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cfeda0a4a520ac4aadadaad3eaedc01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  mode: orbital
   maxTimer: 2
   movementSpeedModifier: 10
   boostSlider: {fileID: 0}

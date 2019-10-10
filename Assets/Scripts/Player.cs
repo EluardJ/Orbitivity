@@ -14,6 +14,10 @@ public class Player : MonoBehaviour
 
     #region Variables
     [SerializeField] private GameObject gameManager;
+    [SerializeField] private float minTimer = 1;
+    [SerializeField] private float maxTimer = 2;
+    [SerializeField] private float movementSpeedModifier = 3;
+    public Slider boostSlider;
 
     private Rigidbody2D rb2D;
     public string mode = "orbital";
@@ -26,11 +30,6 @@ public class Player : MonoBehaviour
     private Vector3 orbitOrigin;
     private float buttonTimer;
     private float currentSpeed = 7;
-    [SerializeField] private float minTimer = 1;
-    [SerializeField] private float maxTimer = 2;
-    [SerializeField] private float movementSpeedModifier = 3;
-
-    public Slider boostSlider;
     #endregion
 
     #region Unity's functions
@@ -91,6 +90,9 @@ public class Player : MonoBehaviour
 
             //manages the number of planets by destroying the last one and spawning other ones if necessary
             gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
+
+            //manges the score
+            gameManager.GetComponent<GManager>().IncrementScore();
         }
 
     }

@@ -13,15 +13,20 @@ public class Player : MonoBehaviour
 {
 
     #region Variables
+    [SerializeField] private GameObject gameManager;
+
     private Rigidbody2D rb2D;
     public string mode = "orbital";
+    private bool starting = true;
     private Vector2 moveDirection;
     private GameObject nearPlanet;
+    private GameObject lastPlanet;
     private float lastDistanceToPlanet;
     private float distanceToOrbitingPlanet;
     private Vector3 orbitOrigin;
     private float buttonTimer;
     private float currentSpeed = 7;
+    [SerializeField] private float minTimer = 1;
     [SerializeField] private float maxTimer = 2;
     [SerializeField] private float movementSpeedModifier = 3;
 
@@ -36,6 +41,8 @@ public class Player : MonoBehaviour
         nearPlanet = GameObject.Find("StartPlanet");
         orbitOrigin = nearPlanet.transform.position;
         distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
+        buttonTimer = minTimer;
+        gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
     }
 
     // Update is called once per frame
@@ -60,19 +67,32 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        mode = "in gravity field";
-        nearPlanet = other.gameObject;
-        orbitOrigin = nearPlanet.transform.position;
-        lastDistanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
-
-        if (Vector2.SignedAngle(rb2D.velocity, (transform.position - orbitOrigin)) > 0)
+        if (starting == true)
         {
-            movementSpeedModifier = -Mathf.Abs(movementSpeedModifier);
+            starting = false;
         }
         else
         {
-            movementSpeedModifier = Mathf.Abs(movementSpeedModifier);
+            mode = "in gravity field";
+            lastPlanet = nearPlanet;
+            nearPlanet = other.gameObject;
+            orbitOrigin = nearPlanet.transform.position;
+            lastDistanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
+
+            //decide the direction of the orbiting rotation around the planet, based on the position of the ship relative to the planet
+            if (Vector2.SignedAngle(rb2D.velocity, (transform.position - orbitOrigin)) > 0)
+            {
+                movementSpeedModifier = -Mathf.Abs(movementSpeedModifier);
+            }
+            else
+            {
+                movementSpeedModifier = Mathf.Abs(movementSpeedModifier);
+            }
+
+            //manages the number of planets by destroying the last one and spawning other ones if necessary
+            gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
         }
+
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -124,7 +144,7 @@ public class Player : MonoBehaviour
             buttonTimer += Time.deltaTime;
 
             //updates the BoostSlider
-            boostSlider.value = (Mathf.Clamp(buttonTimer, 0f, maxTimer) / maxTimer) * 100;
+            boostSlider.value = (Mathf.Clamp(buttonTimer - minTimer, 0, maxTimer) / maxTimer) * 100;
         }
 
         if (Input.GetKeyUp(KeyCode.Space))
@@ -134,11 +154,11 @@ public class Player : MonoBehaviour
                 //launches the ship, going into moving mode
                 mode = "moving";
                 boostSlider.value = 0;
-                rb2D.AddForce(transform.right * Mathf.Clamp(buttonTimer, 0, maxTimer) * Mathf.Abs(movementSpeedModifier), ForceMode2D.Impulse);
-                Debug.Log(Mathf.Clamp(buttonTimer, 0, maxTimer));
+                rb2D.AddForce(transform.right * Mathf.Clamp(buttonTimer, minTimer, maxTimer) * Mathf.Abs(movementSpeedModifier), ForceMode2D.Impulse);
+                Debug.Log(Mathf.Clamp(buttonTimer, minTimer, maxTimer));
             }
 
-            buttonTimer = 0f;
+            buttonTimer = minTimer;
         }
     }
 

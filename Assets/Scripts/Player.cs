@@ -66,46 +66,28 @@ public class Player : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (starting == true)
+        if (other.gameObject.tag == "Planet")
         {
-            starting = false;
+            EnteringGravityField(other.gameObject);
         }
-        else
-        {
-            mode = "in gravity field";
-            lastPlanet = nearPlanet;
-            nearPlanet = other.gameObject;
-            orbitOrigin = nearPlanet.transform.position;
-            lastDistanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
-
-            //decide the direction of the orbiting rotation around the planet, based on the position of the ship relative to the planet
-            if (Vector2.SignedAngle(rb2D.velocity, (transform.position - orbitOrigin)) > 0)
-            {
-                movementSpeedModifier = -Mathf.Abs(movementSpeedModifier);
-            }
-            else
-            {
-                movementSpeedModifier = Mathf.Abs(movementSpeedModifier);
-            }
-
-            //manages the number of planets by destroying the last one and spawning other ones if necessary
-            gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
-
-            //manges the score
-            gameManager.GetComponent<GManager>().IncrementScore();
-        }
-
     }
 
-    private void OnTriggerStay2D(Collider2D collision)
+    private void OnTriggerStay2D(Collider2D other)
     {
-        AdjustGravityFieldScale();
+        if (other.gameObject.tag == "Planet")
+        {
+            AdjustGravityFieldScale();
+        }
+
     }
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        other.GetComponent<PointEffector2D>().enabled = true;
-        other.transform.GetChild(1).transform.localScale = Vector3.one;
+        if (other.gameObject.tag == "Planet")
+        {
+            other.GetComponent<PointEffector2D>().enabled = true;
+            other.transform.GetChild(1).transform.localScale = Vector3.one;
+        }
     }
 
     #endregion
@@ -161,6 +143,38 @@ public class Player : MonoBehaviour
             }
 
             buttonTimer = minTimer;
+        }
+    }
+
+    private void EnteringGravityField(GameObject other)
+    {
+        if (starting == true)
+        {
+            starting = false;
+        }
+        else
+        {
+            mode = "in gravity field";
+            lastPlanet = nearPlanet;
+            nearPlanet = other;
+            orbitOrigin = nearPlanet.transform.position;
+            lastDistanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
+
+            //decide the direction of the orbiting rotation around the planet, based on the position of the ship relative to the planet
+            if (Vector2.SignedAngle(rb2D.velocity, (transform.position - orbitOrigin)) > 0)
+            {
+                movementSpeedModifier = -Mathf.Abs(movementSpeedModifier);
+            }
+            else
+            {
+                movementSpeedModifier = Mathf.Abs(movementSpeedModifier);
+            }
+
+            //manages the number of planets by destroying the last one and spawning other ones if necessary
+            gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
+
+            //manges the score
+            gameManager.GetComponent<GManager>().IncrementScore();
         }
     }
 

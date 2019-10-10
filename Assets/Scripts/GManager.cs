@@ -15,6 +15,7 @@ public class GManager : MonoBehaviour
     #region Variables
     public int numberOfPlanets = 3;
     public Text scoreText;
+    public Text gameOverText;
     [SerializeField] private GameObject[] planetsToSpawn = new GameObject[3];
 
     private Vector2 minRange = new Vector2(-14.5f, -7f);
@@ -95,6 +96,12 @@ public class GManager : MonoBehaviour
     {
         score += 1;
         scoreText.text = "SCORE : " + score.ToString();
+    }
+
+    public void GameOver()
+    {
+        Debug.Log("GAME OVER");
+        gameOverText.text = "GAME OVER - press R to retry";
     }
     #endregion
 }

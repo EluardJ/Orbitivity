@@ -14,9 +14,9 @@ public class Player : MonoBehaviour
 
     #region Variables
     [SerializeField] private GameObject gameManager;
-    [SerializeField] private float minTimer = 1;
-    [SerializeField] private float maxTimer = 2;
-    [SerializeField] private float movementSpeedModifier = 3;
+    [SerializeField] private float minTimer = 0f;
+    [SerializeField] private float maxTimer = 2f;
+    [SerializeField] private float movementSpeedModifier = 7;
     public Slider boostSlider;
 
     private Rigidbody2D rb2D;
@@ -122,7 +122,7 @@ public class Player : MonoBehaviour
     private void UsingSpaceKey()
     // dictate what the space key is doing according to the situation
     {
-        if (Input.GetKey(KeyCode.Space) && mode == "orbital")
+        if (Input.GetKey(KeyCode.Space))
         {
             //charges the timer
             buttonTimer += Time.deltaTime;
@@ -185,7 +185,7 @@ public class Player : MonoBehaviour
         {
             float distanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
 
-            if (distanceToPlanet > lastDistanceToPlanet)
+            if (distanceToPlanet > lastDistanceToPlanet && distanceToPlanet > 2)
             {
                 //enter orbital mode if the conditions are met
                 currentSpeed = rb2D.velocity.magnitude;

@@ -101,7 +101,15 @@ public class GManager : MonoBehaviour
     public void GameOver()
     {
         Debug.Log("GAME OVER");
-        gameOverText.text = "GAME OVER - press R to retry";
+        if (score > PlayerPrefs.GetInt("HighScore", 0))
+        {
+            gameOverText.text = "GAME OVER\npress R to retry\nNEW HIGHSCORE : " + score.ToString() + "\n (old highscore = " + PlayerPrefs.GetInt("HighScore", 0).ToString() + ")";
+            PlayerPrefs.SetInt("HighScore", score);
+        }
+        else
+        {
+            gameOverText.text = "GAME OVER\npress R to retry\nscore : " + score.ToString() + "\n highscore = " + PlayerPrefs.GetInt("HighScore", 0).ToString();
+        }
     }
     #endregion
 }

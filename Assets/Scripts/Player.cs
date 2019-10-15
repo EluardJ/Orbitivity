@@ -47,7 +47,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(rb2D.velocity.magnitude);
+        Debug.Log(rb2D.velocity.magnitude);
 
         UsingSpaceKey();
 
@@ -115,8 +115,6 @@ public class Player : MonoBehaviour
         //to correct the imprecision of the orbiting code
         float diff = Vector2.Distance(orbitOrigin, transform.position) - distanceToOrbitingPlanet;
         transform.position += dir.normalized * diff;
-
-        //Debug.Log("distance : " + Vector2.Distance(orbitOrigin, transform.position));
     }
 
     private void UsingSpaceKey()
@@ -137,11 +135,11 @@ public class Player : MonoBehaviour
             {
                 //launches the ship, going into moving mode
                 mode = "moving";
-                boostSlider.value = 0;
                 rb2D.AddForce(transform.right * Mathf.Clamp(buttonTimer, minTimer, maxTimer) * Mathf.Abs(movementSpeedModifier), ForceMode2D.Impulse);
-                Debug.Log(Mathf.Clamp(buttonTimer, minTimer, maxTimer));
+                Debug.Log("force : " + Mathf.Clamp(buttonTimer, minTimer, maxTimer));
             }
 
+            boostSlider.value = 0;
             buttonTimer = minTimer;
         }
     }

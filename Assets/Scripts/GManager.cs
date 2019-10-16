@@ -16,8 +16,10 @@ public class GManager : MonoBehaviour
     public int numberOfPlanets = 3;
     public Text scoreText;
     public Text gameOverText;
-    [SerializeField] private GameObject[] planetsToSpawn = new GameObject[3];
+    public GameObject planetsToSpawn;
 
+    private float startingSizeOfPlanets;
+    private float currentSizeOfPlanets;
     private Vector2 minRange = new Vector2(-14.5f, -7f);
     private Vector2 maxRange = new Vector2(14.5f, 7f);
     private int score = 0;
@@ -28,8 +30,13 @@ public class GManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        startingSizeOfPlanets = planetsToSpawn.GetComponent<CircleCollider2D>().radius;
+        currentSizeOfPlanets = startingSizeOfPlanets;
+
         scoreText.text = "SCORE : " + score.ToString();
         StartCoroutine(ScoreUpdater());
+
+        MaintainNumberOfPlanets(null, numberOfPlanets);
     }
 
     // Update is called once per frame
@@ -51,22 +58,29 @@ public class GManager : MonoBehaviour
 
     #region Functions
     private void SpawnPlanetAtRandomPosition(int maxIter = 100)
-    //try to spawn a random planet at a random position, and if it overlaps with another one try to find a new pos for maxIter iterations
+    //try to spawn a random planet at a random position, and if it overlaps with another one try to find a new pos for maxIter iterations, instantiate it if it free
     {
         Vector3 randomSpawnPosition = Vector3.zero;
         int i = 0;
 
         while (i < maxIter)
         {
-            GameObject spawnPlanet = planetsToSpawn[Random.Range(0, planetsToSpawn.Length)];
-
             float xAxis = UnityEngine.Random.Range(minRange.x, maxRange.x);
             float yAxis = UnityEngine.Random.Range(minRange.y, maxRange.y);
             randomSpawnPosition = new Vector3(xAxis, yAxis, 0);
 
-            if (Physics2D.OverlapCircle(randomSpawnPosition, spawnPlanet.GetComponent<CircleCollider2D>().radius) == null)
+            if (Physics2D.OverlapCircle(randomSpawnPosition, planetsToSpawn.GetComponent<CircleCollider2D>().radius) == null)
             {
-                Instantiate(spawnPlanet, randomSpawnPosition, Quaternion.identity);
+                GameObject spawnedPlanet = Instantiate(planetsToSpawn, randomSpawnPosition, Quaternion.identity);
+
+                //set the planet at the right size and reduce the current size
+                Debug.Log(currentSizeOfPlanets + " " + startingSizeOfPlanets);
+                float ratio = currentSizeOfPlanets / startingSizeOfPlanets;
+                spawnedPlanet.GetComponent<CircleCollider2D>().radius = currentSizeOfPlanets;
+                spawnedPlanet.transform.GetChild(1).localScale = new Vector3(ratio, ratio, 1);
+                spawnedPlanet.GetComponent<Planet>().currentSize = currentSizeOfPlanets;
+
+                currentSizeOfPlanets -= 0.2f;
                 break;
             }
             else

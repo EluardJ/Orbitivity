@@ -42,7 +42,6 @@ public class Player : MonoBehaviour
         orbitOrigin = nearPlanet.transform.position;
         distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
         buttonTimer = minTimer;
-        gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
         boostSliderFillImage.color = Color.green;
     }
 
@@ -76,24 +75,6 @@ public class Player : MonoBehaviour
         if (other.gameObject.tag == "Planet")
         {
             EnteringGravityField(other.gameObject);
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "Planet")
-        {
-            AdjustGravityFieldScale();
-        }
-
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "Planet")
-        {
-            other.GetComponent<PointEffector2D>().enabled = true;
-            other.transform.GetChild(1).transform.localScale = Vector3.one;
         }
     }
 
@@ -227,18 +208,7 @@ public class Player : MonoBehaviour
             }
 
             lastDistanceToPlanet = distanceToPlanet;
-
-            AdjustGravityFieldScale();
         }
     }
-
-    private void AdjustGravityFieldScale()
-    //change the radius of the sprite of the gravity field
-    {
-        float distRatio = Mathf.Clamp(Vector2.Distance(transform.position, orbitOrigin) / nearPlanet.GetComponent<CircleCollider2D>().radius, 0, 1);
-        Transform gravFieldNearPlanet = nearPlanet.transform.GetChild(1);
-        gravFieldNearPlanet.transform.localScale = new Vector3(distRatio, distRatio);
-    }
-
     #endregion
 }

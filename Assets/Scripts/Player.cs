@@ -64,6 +64,11 @@ public class Player : MonoBehaviour
         }
 
         RotateToMovingDirection();
+
+        if(mode == "moving")
+        {
+            gameManager.GetComponent<GManager>().IncrementScore(Mathf.RoundToInt(rb2D.velocity.magnitude));
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -71,16 +76,6 @@ public class Player : MonoBehaviour
         if (other.gameObject.tag == "Planet")
         {
             EnteringGravityField(other.gameObject);
-
-            //adjust number of super slide counters if necessary
-            if(superSlideCounter > 1)
-            {
-                superSlideCounter--;
-            }
-            else if(superSlideCounter == 1)
-            {
-                superSlideCounter = 0;
-            }
         }
     }
 
@@ -196,8 +191,21 @@ public class Player : MonoBehaviour
             //manages the number of planets by destroying the last one and spawning other ones if necessary
             gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
 
-            //manges the score
-            gameManager.GetComponent<GManager>().IncrementScore();
+            //adjust number of super slide counters if necessary and manages the score
+            if (superSlideCounter > 1)
+            {
+                superSlideCounter--;
+                gameManager.GetComponent<GManager>().IncrementScore(1000);
+            }
+            else if (superSlideCounter == 1)
+            {
+                superSlideCounter = 0;
+                gameManager.GetComponent<GManager>().IncrementScore(4000);
+            }
+            else
+            {
+                gameManager.GetComponent<GManager>().IncrementScore(500);
+            }
         }
     }
 

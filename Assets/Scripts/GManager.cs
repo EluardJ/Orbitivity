@@ -20,7 +20,8 @@ public class GManager : MonoBehaviour
 
     private Vector2 minRange = new Vector2(-14.5f, -7f);
     private Vector2 maxRange = new Vector2(14.5f, 7f);
-    private int score;
+    private int score = 0;
+    private int displayScore = 0;
     #endregion
 
     #region Unity's Functions
@@ -28,6 +29,7 @@ public class GManager : MonoBehaviour
     void Start()
     {
         scoreText.text = "SCORE : " + score.ToString();
+        StartCoroutine(ScoreUpdater());
     }
 
     // Update is called once per frame
@@ -89,11 +91,28 @@ public class GManager : MonoBehaviour
         }
     }
 
-    public void IncrementScore()
+    public void IncrementScore(int numberToAdd)
     //increment and updates the score
     {
-        score += 1;
-        scoreText.text = "SCORE : " + score.ToString();
+        score += numberToAdd;
+    }
+
+    private IEnumerator ScoreUpdater()
+    {
+        while (true)
+        {
+            if(displayScore < score && (score - displayScore) > 300)
+            {
+                displayScore  += 100;
+                scoreText.text = "SCORE : " + displayScore.ToString();
+            }
+            else if(displayScore < score)
+            {
+                displayScore += 10;
+                scoreText.text = "SCORE : " + displayScore.ToString();
+            }
+            yield return new WaitForSeconds(0.01f);
+        }
     }
 
     public void GameOver()

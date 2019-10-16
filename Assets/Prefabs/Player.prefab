@@ -46,10 +46,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cfeda0a4a520ac4aadadaad3eaedc01, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  mode: orbital
-  maxTimer: 2
-  movementSpeedModifier: 10
+  gameManager: {fileID: 0}
+  minTimer: 0
+  maxTimer: 1
+  movementSpeedModifier: 6
   boostSlider: {fileID: 0}
+  boostSliderFillImage: {fileID: 0}
+  mode: orbital
 --- !u!50 &3179054282876810889
 Rigidbody2D:
   serializedVersion: 4
@@ -64,7 +67,7 @@ Rigidbody2D:
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -164,7 +167,7 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1563136445
-  m_SortingLayer: 2
+  m_SortingLayer: 3
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: c57f986c4d3bf55468d1a0291e27f9b1, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

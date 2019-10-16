@@ -1098,9 +1098,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1099147261659369008, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
         type: 3}
-      propertyPath: movementSpeedModifier
-      value: 6
-      objectReference: {fileID: 0}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1993512023}
     - target: {fileID: 1099147261659369008, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
         type: 3}
       propertyPath: boostSlider
@@ -1108,39 +1108,9 @@ PrefabInstance:
       objectReference: {fileID: 42495913}
     - target: {fileID: 1099147261659369008, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
         type: 3}
-      propertyPath: gameManager
-      value: 
-      objectReference: {fileID: 1993512023}
-    - target: {fileID: 1099147261659369008, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
-        type: 3}
-      propertyPath: mode
-      value: orbital
-      objectReference: {fileID: 0}
-    - target: {fileID: 1099147261659369008, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
-        type: 3}
-      propertyPath: minTimer
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1099147261659369008, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
-        type: 3}
-      propertyPath: maxTimer
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1099147261659369008, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
-        type: 3}
       propertyPath: boostSliderFillImage
       value: 
       objectReference: {fileID: 566695252}
-    - target: {fileID: 3179054282876810889, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
-        type: 3}
-      propertyPath: m_AngularDrag
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1870141739632072030, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0, type: 3}
 --- !u!1 &1511739147

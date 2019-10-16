@@ -65,13 +65,11 @@ public class GManager : MonoBehaviour
             if (Physics2D.OverlapCircle(randomSpawnPosition, spawnPlanet.GetComponent<CircleCollider2D>().radius) == null)
             {
                 Instantiate(spawnPlanet, randomSpawnPosition, Quaternion.identity);
-                Debug.Log("worked the first time");
                 break;
             }
             else
             {
                 i++;
-                Debug.Log("tried " + i + " times");
             }
         }
 
@@ -100,7 +98,6 @@ public class GManager : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log("GAME OVER");
         if (score > PlayerPrefs.GetInt("HighScore", 0))
         {
             gameOverText.text = "GAME OVER\npress R to retry\nNEW HIGHSCORE : " + score.ToString() + "\n (old highscore = " + PlayerPrefs.GetInt("HighScore", 0).ToString() + ")";

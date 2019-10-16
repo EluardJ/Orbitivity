@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float maxTimer = 2f;
     [SerializeField] private float movementSpeedModifier = 7;
     public Slider boostSlider;
+    public Image boostSliderFillImage;
 
     private Rigidbody2D rb2D;
     public string mode = "orbital";
@@ -29,7 +30,7 @@ public class Player : MonoBehaviour
     private float distanceToOrbitingPlanet;
     private Vector3 orbitOrigin;
     private float buttonTimer;
-    private float currentSpeed = 7;
+    private int superSlideCounter = 0;
     #endregion
 
     #region Unity's functions
@@ -42,12 +43,13 @@ public class Player : MonoBehaviour
         distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
         buttonTimer = minTimer;
         gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
+        boostSliderFillImage.color = Color.green;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(rb2D.velocity.magnitude);
+        //Debug.Log(rb2D.velocity.magnitude);
 
         UsingSpaceKey();
 
@@ -69,6 +71,16 @@ public class Player : MonoBehaviour
         if (other.gameObject.tag == "Planet")
         {
             EnteringGravityField(other.gameObject);
+
+            //adjust number of super slide counters if necessary
+            if(superSlideCounter > 1)
+            {
+                superSlideCounter--;
+            }
+            else if(superSlideCounter == 1)
+            {
+                superSlideCounter = 0;
+            }
         }
     }
 
@@ -125,8 +137,15 @@ public class Player : MonoBehaviour
             //charges the timer
             buttonTimer += Time.deltaTime;
 
-            //updates the BoostSlider
+            //updates the BoostSlider and changes the color if needed
             boostSlider.value = (Mathf.Clamp(buttonTimer - minTimer, 0, maxTimer) / maxTimer) * 100;
+            if (buttonTimer > maxTimer / 2)
+            {
+                if(buttonTimer > maxTimer/2)
+                {
+                    boostSliderFillImage.color = Color.cyan;
+                }
+            }
         }
 
         if (Input.GetKeyUp(KeyCode.Space))
@@ -136,10 +155,16 @@ public class Player : MonoBehaviour
                 //launches the ship, going into moving mode
                 mode = "moving";
                 rb2D.AddForce(transform.right * Mathf.Clamp(buttonTimer, minTimer, maxTimer) * Mathf.Abs(movementSpeedModifier), ForceMode2D.Impulse);
-                Debug.Log("force : " + Mathf.Clamp(buttonTimer, minTimer, maxTimer));
+
+                //add counters to the super slide counter if the value is high enough
+                if (buttonTimer > maxTimer / 2)
+                {
+                    superSlideCounter = 2;
+                }
             }
 
             boostSlider.value = 0;
+            boostSliderFillImage.color = Color.green;
             buttonTimer = minTimer;
         }
     }
@@ -183,10 +208,9 @@ public class Player : MonoBehaviour
         {
             float distanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
 
-            if (distanceToPlanet > lastDistanceToPlanet && distanceToPlanet > 2)
+            if (distanceToPlanet > lastDistanceToPlanet && distanceToPlanet > 2 && superSlideCounter <= 0)
             {
                 //enter orbital mode if the conditions are met
-                currentSpeed = rb2D.velocity.magnitude;
                 rb2D.velocity = Vector2.zero;
                 nearPlanet.GetComponent<PointEffector2D>().enabled = false;
                 distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);

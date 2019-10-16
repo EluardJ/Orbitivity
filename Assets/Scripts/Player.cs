@@ -18,6 +18,7 @@ public class Player : MonoBehaviour
     [SerializeField] private float maxTimer = 2f;
     [SerializeField] private float movementSpeedModifier = 7;
     public Slider boostSlider;
+    public Image boostSliderFillImage;
 
     private Rigidbody2D rb2D;
     public string mode = "orbital";
@@ -29,7 +30,7 @@ public class Player : MonoBehaviour
     private float distanceToOrbitingPlanet;
     private Vector3 orbitOrigin;
     private float buttonTimer;
-    private float currentSpeed = 7;
+    private int superSlideCounter = 0;
     #endregion
 
     #region Unity's functions
@@ -41,7 +42,7 @@ public class Player : MonoBehaviour
         orbitOrigin = nearPlanet.transform.position;
         distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
         buttonTimer = minTimer;
-        gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
+        boostSliderFillImage.color = Color.green;
     }
 
     // Update is called once per frame
@@ -62,6 +63,11 @@ public class Player : MonoBehaviour
         }
 
         RotateToMovingDirection();
+
+        if(mode == "moving")
+        {
+            gameManager.GetComponent<GManager>().IncrementScore(Mathf.RoundToInt(rb2D.velocity.magnitude));
+        }
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -69,24 +75,6 @@ public class Player : MonoBehaviour
         if (other.gameObject.tag == "Planet")
         {
             EnteringGravityField(other.gameObject);
-        }
-    }
-
-    private void OnTriggerStay2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "Planet")
-        {
-            AdjustGravityFieldScale();
-        }
-
-    }
-
-    private void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.gameObject.tag == "Planet")
-        {
-            other.GetComponent<PointEffector2D>().enabled = true;
-            other.transform.GetChild(1).transform.localScale = Vector3.one;
         }
     }
 
@@ -115,8 +103,6 @@ public class Player : MonoBehaviour
         //to correct the imprecision of the orbiting code
         float diff = Vector2.Distance(orbitOrigin, transform.position) - distanceToOrbitingPlanet;
         transform.position += dir.normalized * diff;
-
-        //Debug.Log("distance : " + Vector2.Distance(orbitOrigin, transform.position));
     }
 
     private void UsingSpaceKey()
@@ -127,8 +113,15 @@ public class Player : MonoBehaviour
             //charges the timer
             buttonTimer += Time.deltaTime;
 
-            //updates the BoostSlider
+            //updates the BoostSlider and changes the color if needed
             boostSlider.value = (Mathf.Clamp(buttonTimer - minTimer, 0, maxTimer) / maxTimer) * 100;
+            if (buttonTimer > maxTimer / 2)
+            {
+                if(buttonTimer > maxTimer/2)
+                {
+                    boostSliderFillImage.color = Color.cyan;
+                }
+            }
         }
 
         if (Input.GetKeyUp(KeyCode.Space))
@@ -137,11 +130,17 @@ public class Player : MonoBehaviour
             {
                 //launches the ship, going into moving mode
                 mode = "moving";
-                boostSlider.value = 0;
                 rb2D.AddForce(transform.right * Mathf.Clamp(buttonTimer, minTimer, maxTimer) * Mathf.Abs(movementSpeedModifier), ForceMode2D.Impulse);
-                Debug.Log(Mathf.Clamp(buttonTimer, minTimer, maxTimer));
+
+                //add counters to the super slide counter if the value is high enough
+                if (buttonTimer > maxTimer / 2)
+                {
+                    superSlideCounter = 2;
+                }
             }
 
+            boostSlider.value = 0;
+            boostSliderFillImage.color = Color.green;
             buttonTimer = minTimer;
         }
     }
@@ -173,8 +172,21 @@ public class Player : MonoBehaviour
             //manages the number of planets by destroying the last one and spawning other ones if necessary
             gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
 
-            //manges the score
-            gameManager.GetComponent<GManager>().IncrementScore();
+            //adjust number of super slide counters if necessary and manages the score
+            if (superSlideCounter > 1)
+            {
+                superSlideCounter--;
+                gameManager.GetComponent<GManager>().IncrementScore(1000);
+            }
+            else if (superSlideCounter == 1)
+            {
+                superSlideCounter = 0;
+                gameManager.GetComponent<GManager>().IncrementScore(4000);
+            }
+            else
+            {
+                gameManager.GetComponent<GManager>().IncrementScore(500);
+            }
         }
     }
 
@@ -185,10 +197,9 @@ public class Player : MonoBehaviour
         {
             float distanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
 
-            if (distanceToPlanet > lastDistanceToPlanet && distanceToPlanet > 2)
+            if (distanceToPlanet > lastDistanceToPlanet && distanceToPlanet > 2 && superSlideCounter <= 0)
             {
                 //enter orbital mode if the conditions are met
-                currentSpeed = rb2D.velocity.magnitude;
                 rb2D.velocity = Vector2.zero;
                 nearPlanet.GetComponent<PointEffector2D>().enabled = false;
                 distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
@@ -197,18 +208,7 @@ public class Player : MonoBehaviour
             }
 
             lastDistanceToPlanet = distanceToPlanet;
-
-            AdjustGravityFieldScale();
         }
     }
-
-    private void AdjustGravityFieldScale()
-    //change the radius of the sprite of the gravity field
-    {
-        float distRatio = Mathf.Clamp(Vector2.Distance(transform.position, orbitOrigin) / nearPlanet.GetComponent<CircleCollider2D>().radius, 0, 1);
-        Transform gravFieldNearPlanet = nearPlanet.transform.GetChild(1);
-        gravFieldNearPlanet.transform.localScale = new Vector3(distRatio, distRatio);
-    }
-
     #endregion
 }

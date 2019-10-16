@@ -80,7 +80,7 @@ public class GManager : MonoBehaviour
                 spawnedPlanet.transform.GetChild(1).localScale = new Vector3(ratio, ratio, 1);
                 spawnedPlanet.GetComponent<Planet>().currentSize = currentSizeOfPlanets;
 
-                currentSizeOfPlanets -= 0.2f;
+                currentSizeOfPlanets -= 0.05f;
                 break;
             }
             else

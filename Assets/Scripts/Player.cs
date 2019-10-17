@@ -21,7 +21,7 @@ public class Player : MonoBehaviour
     public Image boostSliderFillImage;
 
     private Rigidbody2D rb2D;
-    public string mode = "orbital";
+    public string state = "orbital";
     private bool starting = true;
     private Vector2 moveDirection;
     private GameObject nearPlanet;
@@ -31,6 +31,9 @@ public class Player : MonoBehaviour
     private Vector3 orbitOrigin;
     private float buttonTimer;
     private int superSlideCounter = 0;
+    private ParticleSystem particleBoost;
+    private Gradient boostGradientRed;
+    private Gradient boostGradientBlue;
     #endregion
 
     #region Unity's functions
@@ -43,6 +46,13 @@ public class Player : MonoBehaviour
         distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
         buttonTimer = minTimer;
         boostSliderFillImage.color = Color.green;
+
+        particleBoost = transform.GetChild(1).GetComponent<ParticleSystem>();
+        boostGradientRed = new Gradient();
+        boostGradientRed.SetKeys(new GradientColorKey[] { new GradientColorKey(new Color(1f, 0.63f, 0f), 0.0f), new GradientColorKey(new Color(0.94f, 0.82f, 0f), 20.0f), new GradientColorKey(new Color(0.89f, 1f, 0f), 50.0f) }, new GradientAlphaKey[] { });
+        boostGradientBlue = new Gradient();
+        boostGradientBlue.SetKeys(new GradientColorKey[] { new GradientColorKey(new Color(0.12f, 0f, 1f), 0.0f), new GradientColorKey(new Color(0.06f, 0.44f, 0.99f), 0.2f), new GradientColorKey(new Color(0.16f, 0.96f, 1f), 0.5f) }, new GradientAlphaKey[] {new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 1.0f)});
+        Debug.Log(boostGradientBlue);
     }
 
     // Update is called once per frame
@@ -57,14 +67,14 @@ public class Player : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if (mode == "orbital")
+        if (state == "orbital")
         {
             OrbitAround();
         }
 
         RotateToMovingDirection();
 
-        if(mode == "moving")
+        if(state == "moving")
         {
             gameManager.GetComponent<GManager>().IncrementScore(Mathf.RoundToInt(rb2D.velocity.magnitude));
         }
@@ -75,6 +85,15 @@ public class Player : MonoBehaviour
         if (other.gameObject.tag == "Planet")
         {
             EnteringGravityField(other.gameObject);
+        }
+    }
+
+    private void OnTriggerExit2D(Collider2D other)
+    {
+        if(other.gameObject.tag == "Planet" && superSlideCounter == 1)
+        {
+            var col = particleBoost.colorOverLifetime;
+            col.color = boostGradientRed;
         }
     }
 
@@ -120,16 +139,18 @@ public class Player : MonoBehaviour
                 if(buttonTimer > maxTimer/2)
                 {
                     boostSliderFillImage.color = Color.cyan;
+                    var col = particleBoost.colorOverLifetime;
+                    col.color = boostGradientBlue;
                 }
             }
         }
 
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            if (mode == "orbital")
+            if (state == "orbital")
             {
-                //launches the ship, going into moving mode
-                mode = "moving";
+                //launches the ship, going into moving state
+                state = "moving";
                 rb2D.AddForce(transform.right * Mathf.Clamp(buttonTimer, minTimer, maxTimer) * Mathf.Abs(movementSpeedModifier), ForceMode2D.Impulse);
 
                 //add counters to the super slide counter if the value is high enough
@@ -153,7 +174,7 @@ public class Player : MonoBehaviour
         }
         else
         {
-            mode = "in gravity field";
+            state = "in gravity field";
             lastPlanet = nearPlanet;
             nearPlanet = other;
             orbitOrigin = nearPlanet.transform.position;
@@ -192,19 +213,19 @@ public class Player : MonoBehaviour
 
     private void InGravityField()
     {
-        if (mode == "in gravity field")
+        if (state == "in gravity field")
         // determine if the ship is going near or away the current planet
         {
             float distanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
 
             if (distanceToPlanet > lastDistanceToPlanet && distanceToPlanet > 2 && superSlideCounter <= 0)
             {
-                //enter orbital mode if the conditions are met
+                //enter orbital state if the conditions are met
                 rb2D.velocity = Vector2.zero;
                 nearPlanet.GetComponent<PointEffector2D>().enabled = false;
                 distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
 
-                mode = "orbital";
+                state = "orbital";
             }
 
             lastDistanceToPlanet = distanceToPlanet;

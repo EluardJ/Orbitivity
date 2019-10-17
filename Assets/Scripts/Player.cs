@@ -47,6 +47,7 @@ public class Player : MonoBehaviour
         buttonTimer = minTimer;
         boostSliderFillImage.color = Color.green;
 
+        //set the colors for the boost particle system
         particleBoost = transform.GetChild(1).GetComponent<ParticleSystem>();
         boostGradientRed = new Gradient();
         boostGradientRed.SetKeys(new GradientColorKey[] { new GradientColorKey(new Color(1f, 0.63f, 0f), 0.0f), new GradientColorKey(new Color(0.94f, 0.82f, 0f), 20.0f), new GradientColorKey(new Color(0.89f, 1f, 0f), 50.0f) }, new GradientAlphaKey[] { });
@@ -58,8 +59,6 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //Debug.Log(rb2D.velocity.magnitude);
-
         UsingSpaceKey();
 
         InGravityField();

@@ -17,6 +17,11 @@ public class Planet : MonoBehaviour
     private float rotationSpeed = 0;
     private Vector3 rotationVector;
     private GameObject GravityField;
+    private GameObject PlanetSprite;
+    private bool isSpawning = true;
+    private bool isBeingDestroyed = false;
+    private float lerpPlanet = 0.0f;
+    private float lerpGravField;
     #endregion
 
     #region Unity's Functions
@@ -24,6 +29,7 @@ public class Planet : MonoBehaviour
     void Start()
     {
         GravityField = transform.GetChild(1).gameObject;
+        PlanetSprite = transform.GetChild(0).gameObject;
 
         while (rotationSpeed == 0)
         {
@@ -38,6 +44,9 @@ public class Planet : MonoBehaviour
     void Update()
     {
         GravityField.transform.Rotate(rotationVector);
+
+        SpawnAnimation();
+        DestroyAnimation();
     }
 
     private void OnTriggerStay2D(Collider2D other)
@@ -65,6 +74,51 @@ public class Planet : MonoBehaviour
         float distRatio = Mathf.Clamp((distance / currentSize) * ratio, 0, ratio);
         Transform gravFieldNearPlanet = transform.GetChild(1);
         gravFieldNearPlanet.transform.localScale = new Vector3(distRatio, distRatio);
+    }
+
+    private void SpawnAnimation()
+    {
+        if (isSpawning == true)
+        {
+            float ratio = currentSize / startingSize;
+            if (GravityField.transform.localScale.x != ratio)
+            {
+                lerpPlanet += 3.0f * Time.deltaTime;
+                float lerpedScale = Mathf.Lerp(0.0f, ratio, lerpPlanet);
+                PlanetSprite.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
+
+                lerpGravField += 2.0f * Time.deltaTime;
+                lerpedScale = Mathf.Lerp(0.0f, ratio, lerpGravField);
+                GravityField.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
+            }
+            else
+            {
+                isSpawning = false;
+            }
+        }
+    }
+
+    public void DestroyPlanet()
+    {
+        isBeingDestroyed = true;
+        lerpPlanet = 0.0f;
+    }
+
+    private void DestroyAnimation()
+    {
+        if (isBeingDestroyed == true)
+        {
+            float ratio = currentSize / startingSize;
+            lerpPlanet += 3.0f * Time.deltaTime;
+            float lerpedScale = Mathf.Lerp(ratio, 0.0f, lerpPlanet);
+            PlanetSprite.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
+            GravityField.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
+
+            if (GravityField.transform.localScale.x < 0.1f)
+            {
+                Destroy(gameObject);
+            }
+        }
     }
     #endregion
 }

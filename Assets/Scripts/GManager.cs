@@ -69,15 +69,12 @@ public class GManager : MonoBehaviour
             float yAxis = UnityEngine.Random.Range(minRange.y, maxRange.y);
             randomSpawnPosition = new Vector3(xAxis, yAxis, 0);
 
-            if (Physics2D.OverlapCircle(randomSpawnPosition, planetsToSpawn.GetComponent<CircleCollider2D>().radius) == null)
+            if (Physics2D.OverlapCircle(randomSpawnPosition, 4.0f) == null)
             {
                 GameObject spawnedPlanet = Instantiate(planetsToSpawn, randomSpawnPosition, Quaternion.identity);
 
                 //set the planet at the right size and reduce the current size
-                Debug.Log(currentSizeOfPlanets + " " + startingSizeOfPlanets);
-                float ratio = currentSizeOfPlanets / startingSizeOfPlanets;
                 spawnedPlanet.GetComponent<CircleCollider2D>().radius = currentSizeOfPlanets;
-                spawnedPlanet.transform.GetChild(1).localScale = new Vector3(ratio, ratio, 1);
                 spawnedPlanet.GetComponent<Planet>().currentSize = currentSizeOfPlanets;
 
                 currentSizeOfPlanets -= 0.05f;
@@ -96,7 +93,8 @@ public class GManager : MonoBehaviour
     {
         if (lastPlanet != null)
         {
-            Destroy(lastPlanet);
+            //Destroy(lastPlanet);
+            lastPlanet.GetComponent<Planet>().DestroyPlanet();
         }
 
         while (GameObject.FindGameObjectsWithTag("Planet").Length <= nbr)
@@ -115,12 +113,12 @@ public class GManager : MonoBehaviour
     {
         while (true)
         {
-            if(displayScore < score && (score - displayScore) > 300)
+            if (displayScore < score && (score - displayScore) > 300)
             {
-                displayScore  += 100;
+                displayScore += 100;
                 scoreText.text = "SCORE : " + displayScore.ToString();
             }
-            else if(displayScore < score)
+            else if (displayScore < score)
             {
                 displayScore += 10;
                 scoreText.text = "SCORE : " + displayScore.ToString();

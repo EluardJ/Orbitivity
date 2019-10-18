@@ -45,7 +45,7 @@ public class Player : MonoBehaviour
         orbitOrigin = nearPlanet.transform.position;
         distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
         buttonTimer = minTimer;
-        boostSliderFillImage.color = Color.green;
+        boostSliderFillImage.color = Color.yellow;
 
         //set the colors for the boost particle system
         particleBoost = transform.GetChild(1).GetComponent<ParticleSystem>();
@@ -53,7 +53,6 @@ public class Player : MonoBehaviour
         boostGradientRed.SetKeys(new GradientColorKey[] { new GradientColorKey(new Color(1f, 0.63f, 0f), 0.0f), new GradientColorKey(new Color(0.94f, 0.82f, 0f), 20.0f), new GradientColorKey(new Color(0.89f, 1f, 0f), 50.0f) }, new GradientAlphaKey[] { });
         boostGradientBlue = new Gradient();
         boostGradientBlue.SetKeys(new GradientColorKey[] { new GradientColorKey(new Color(0.12f, 0f, 1f), 0.0f), new GradientColorKey(new Color(0.06f, 0.44f, 0.99f), 0.2f), new GradientColorKey(new Color(0.16f, 0.96f, 1f), 0.5f) }, new GradientAlphaKey[] {new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 1.0f)});
-        Debug.Log(boostGradientBlue);
     }
 
     // Update is called once per frame
@@ -160,7 +159,7 @@ public class Player : MonoBehaviour
             }
 
             boostSlider.value = 0;
-            boostSliderFillImage.color = Color.green;
+            boostSliderFillImage.color = Color.yellow;
             buttonTimer = minTimer;
         }
     }

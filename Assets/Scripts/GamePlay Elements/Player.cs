@@ -130,7 +130,7 @@ public class Player : MonoBehaviour
             boostButtonTimer += Time.deltaTime;
 
             //updates the BoostSlider and changes the color if needed
-            GameEvents.current.SliderChange((Mathf.Clamp(boostButtonTimer - minTimer, 0, maxTimer) / maxTimer) * 100);
+            GameEvents.current.SliderValueChange((Mathf.Clamp(boostButtonTimer - minTimer, 0, maxTimer) / maxTimer) * 100);
             if (boostButtonTimer > maxTimer / 2)
             {
                 if (boostButtonTimer > maxTimer / 2)
@@ -161,7 +161,7 @@ public class Player : MonoBehaviour
                 }
             }
 
-            GameEvents.current.SliderChange(0);
+            GameEvents.current.SliderValueChange(0);
             GameEvents.current.SliderImageColorChange(Color.yellow);
             boostButtonTimer = minTimer;
         }
@@ -190,16 +190,19 @@ public class Player : MonoBehaviour
             {
                 superSlideCounter--;
                 GameEvents.current.ScoreIncrease(1000);
+                GameEvents.current.InstantiateScorePopup(nearPlanet.transform, 1000, 1.5f);
             }
             else if (superSlideCounter == 1)
             {
                 superSlideCounter = 0;
-                GameEvents.current.ScoreIncrease(4000);
+                GameEvents.current.ScoreIncrease(5000);
+                GameEvents.current.InstantiateScorePopup(nearPlanet.transform, 5000, 2.0f);
                 DecideOrbitDirection();
             }
             else
             {
-                GameEvents.current.ScoreIncrease(500);
+                GameEvents.current.ScoreIncrease(1000);
+                GameEvents.current.InstantiateScorePopup(nearPlanet.transform, 1000, 1.5f);
                 DecideOrbitDirection();
             }
         }

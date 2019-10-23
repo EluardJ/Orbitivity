@@ -49,7 +49,7 @@ public class GameEvents : MonoBehaviour
     }
 
     public event Action<float> onSliderChange;
-    public void SliderChange(float number)
+    public void SliderValueChange(float number)
     {
         if(onSliderChange != null)
         {
@@ -63,6 +63,15 @@ public class GameEvents : MonoBehaviour
         if(onSliderImageColorChange != null)
         {
             onSliderImageColorChange(color);
+        }
+    }
+
+    public event Action<Transform, int, float> onInstantiateScorePopup;
+    public void InstantiateScorePopup(Transform position, int score, float size)
+    {
+        if(onInstantiateScorePopup != null)
+        {
+            onInstantiateScorePopup(position, score, size);
         }
     }
     #endregion

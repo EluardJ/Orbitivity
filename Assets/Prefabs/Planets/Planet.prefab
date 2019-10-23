@@ -165,6 +165,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentSize: 0
   startingSize: 3.5
+  scorePopup: {fileID: 8709147301449040780, guid: 3ad80f1f54eee0540b46cc7e9a1f8587,
+    type: 3}
 --- !u!1 &8161272537015939779
 GameObject:
   m_ObjectHideFlags: 0

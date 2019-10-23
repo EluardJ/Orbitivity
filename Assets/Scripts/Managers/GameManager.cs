@@ -9,20 +9,24 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using TMPro;
 
 public class GameManager : MonoBehaviour
 {
     #region Variables
-    public Text scoreText;
+    [Header("Prefab References")]
+    public TextMeshProUGUI scoreText;
     public Text gameOverText;
     public GameObject planetsToSpawn;
+    public GameObject scorePopup;
 
+    [Header("Values")]
     [SerializeField] private int numberOfPlanets = 3;
 
     private float startingSizeOfPlanets;
     private float currentSizeOfPlanets;
-    private Vector2 minRange = new Vector2(-14.5f, -7f);
-    private Vector2 maxRange = new Vector2(14.5f, 7f);
+    private Vector2 minRangeToSpawn = new Vector2(-14.5f, -7f);
+    private Vector2 maxRangeToSpawn = new Vector2(14.5f, 7f);
     private int score = 0;
     private int displayScore = 0;
     #endregion
@@ -41,6 +45,7 @@ public class GameManager : MonoBehaviour
         GameEvents.current.onScoreIncrease += IncrementScore;
         GameEvents.current.onNewPlanet += MaintainNumbersOfPlanets;
         GameEvents.current.onGameOver += GameOver;
+        GameEvents.current.onInstantiateScorePopup += InstantiateScorePopup;
     }
 
     void Update()
@@ -57,6 +62,14 @@ public class GameManager : MonoBehaviour
             SpawnPlanetAtRandomPosition();
         }
     }
+
+    private void OnDestroy()
+    {
+        GameEvents.current.onScoreIncrease -= IncrementScore;
+        GameEvents.current.onNewPlanet -= MaintainNumbersOfPlanets;
+        GameEvents.current.onGameOver -= GameOver;
+        GameEvents.current.onInstantiateScorePopup -= InstantiateScorePopup;
+    }
     #endregion
 
     #region Functions
@@ -68,8 +81,8 @@ public class GameManager : MonoBehaviour
 
         while (i < maxIter)
         {
-            float xAxis = UnityEngine.Random.Range(minRange.x, maxRange.x);
-            float yAxis = UnityEngine.Random.Range(minRange.y, maxRange.y);
+            float xAxis = UnityEngine.Random.Range(minRangeToSpawn.x, maxRangeToSpawn.x);
+            float yAxis = UnityEngine.Random.Range(minRangeToSpawn.y, maxRangeToSpawn.y);
             randomSpawnPosition = new Vector3(xAxis, yAxis, 0);
 
             if (Physics2D.OverlapCircle(randomSpawnPosition, 4.0f) == null)
@@ -134,6 +147,13 @@ public class GameManager : MonoBehaviour
             }
             yield return new WaitForSeconds(0.01f);
         }
+    }
+
+    private void InstantiateScorePopup(Transform position, int score, float size)
+    {
+        GameObject popup = Instantiate(scorePopup, position);
+        popup.GetComponent<TextMeshPro>().text = "+" + score.ToString();
+        popup.transform.localScale = new Vector3(size, size, 0);
     }
 
     public void GameOver()

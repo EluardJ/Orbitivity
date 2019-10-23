@@ -18,11 +18,6 @@ public class Player : MonoBehaviour
     [SerializeField] private float maxTimer = 2f;
     [SerializeField] private float movementSpeedModifier = 7;
 
-    [Header("GameObjects References")]
-    [SerializeField] private GameObject gameManager;
-    public Slider boostSlider;
-    public Image boostSliderFillImage;
-
     private enum State
     {
         Orbiting,
@@ -53,7 +48,6 @@ public class Player : MonoBehaviour
         orbitOrigin = nearPlanet.transform.position;
         distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
         boostButtonTimer = minTimer;
-        boostSliderFillImage.color = Color.yellow;
 
         SetColoursForBoostParticlesGradients();
     }
@@ -78,9 +72,9 @@ public class Player : MonoBehaviour
 
         RotateToMovingDirection();
 
-        if (currentState == State.Moving)
+        if (currentState == State.Moving || currentState == State.InGravityField)
         {
-            gameManager.GetComponent<GManager>().IncrementScore(Mathf.RoundToInt(rigidBody2D.velocity.magnitude));
+            GameEvents.current.ScoreIncrease(Mathf.RoundToInt(rigidBody2D.velocity.magnitude));
         }
     }
 
@@ -136,12 +130,12 @@ public class Player : MonoBehaviour
             boostButtonTimer += Time.deltaTime;
 
             //updates the BoostSlider and changes the color if needed
-            boostSlider.value = (Mathf.Clamp(boostButtonTimer - minTimer, 0, maxTimer) / maxTimer) * 100;
+            GameEvents.current.SliderChange((Mathf.Clamp(boostButtonTimer - minTimer, 0, maxTimer) / maxTimer) * 100);
             if (boostButtonTimer > maxTimer / 2)
             {
                 if (boostButtonTimer > maxTimer / 2)
                 {
-                    boostSliderFillImage.color = Color.cyan;
+                    GameEvents.current.SliderImageColorChange(Color.cyan);
                     var col = particleBoost.colorOverLifetime;
                     col.color = boostGradientBlue;
                 }
@@ -167,8 +161,8 @@ public class Player : MonoBehaviour
                 }
             }
 
-            boostSlider.value = 0;
-            boostSliderFillImage.color = Color.yellow;
+            GameEvents.current.SliderChange(0);
+            GameEvents.current.SliderImageColorChange(Color.yellow);
             boostButtonTimer = minTimer;
         }
     }
@@ -188,23 +182,24 @@ public class Player : MonoBehaviour
             lastDistanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
 
             //manages the number of planets by destroying the last one and spawning other ones if necessary
-            gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
+            //gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
+            GameEvents.current.NewPlanet(lastPlanet);
 
             //adjust number of super slide counters if necessary and manages the score
             if (superSlideCounter > 1)
             {
                 superSlideCounter--;
-                gameManager.GetComponent<GManager>().IncrementScore(1000);
+                GameEvents.current.ScoreIncrease(1000);
             }
             else if (superSlideCounter == 1)
             {
                 superSlideCounter = 0;
-                gameManager.GetComponent<GManager>().IncrementScore(4000);
+                GameEvents.current.ScoreIncrease(4000);
                 DecideOrbitDirection();
             }
             else
             {
-                gameManager.GetComponent<GManager>().IncrementScore(500);
+                GameEvents.current.ScoreIncrease(500);
                 DecideOrbitDirection();
             }
         }

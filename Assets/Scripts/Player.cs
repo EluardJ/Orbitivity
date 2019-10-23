@@ -13,23 +13,32 @@ public class Player : MonoBehaviour
 {
 
     #region Variables
-    [SerializeField] private GameObject gameManager;
+    [Header("Movement Variables")]
     [SerializeField] private float minTimer = 0f;
     [SerializeField] private float maxTimer = 2f;
     [SerializeField] private float movementSpeedModifier = 7;
+
+    [Header("GameObjects References")]
+    [SerializeField] private GameObject gameManager;
     public Slider boostSlider;
     public Image boostSliderFillImage;
 
-    private Rigidbody2D rb2D;
-    public string state = "orbital";
+    private enum State
+    {
+        Orbiting,
+        Moving,
+        InGravityField
+    }
+
+    private Rigidbody2D rigidBody2D;
+    private State currentState = State.Orbiting;
     private bool starting = true;
-    private Vector2 moveDirection;
     private GameObject nearPlanet;
     private GameObject lastPlanet;
     private float lastDistanceToPlanet;
     private float distanceToOrbitingPlanet;
     private Vector3 orbitOrigin;
-    private float buttonTimer;
+    private float boostButtonTimer;
     private int superSlideCounter = 0;
     private ParticleSystem particleBoost;
     private Gradient boostGradientRed;
@@ -37,44 +46,41 @@ public class Player : MonoBehaviour
     #endregion
 
     #region Unity's functions
-    // Start is called before the first frame update
     void Start()
     {
-        rb2D = gameObject.GetComponent<Rigidbody2D>();
+        rigidBody2D = gameObject.GetComponent<Rigidbody2D>();
         nearPlanet = GameObject.Find("StartPlanet");
         orbitOrigin = nearPlanet.transform.position;
         distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
-        buttonTimer = minTimer;
+        boostButtonTimer = minTimer;
         boostSliderFillImage.color = Color.yellow;
 
-        //set the colors for the boost particle system
-        particleBoost = transform.GetChild(1).GetComponent<ParticleSystem>();
-        boostGradientRed = new Gradient();
-        boostGradientRed.SetKeys(new GradientColorKey[] { new GradientColorKey(new Color(1f, 0.63f, 0f), 0.0f), new GradientColorKey(new Color(0.94f, 0.82f, 0f), 20.0f), new GradientColorKey(new Color(0.89f, 1f, 0f), 50.0f) }, new GradientAlphaKey[] { });
-        boostGradientBlue = new Gradient();
-        boostGradientBlue.SetKeys(new GradientColorKey[] { new GradientColorKey(new Color(0.12f, 0f, 1f), 0.0f), new GradientColorKey(new Color(0.06f, 0.44f, 0.99f), 0.2f), new GradientColorKey(new Color(0.16f, 0.96f, 1f), 0.5f) }, new GradientAlphaKey[] {new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 1.0f)});
+        SetColoursForBoostParticlesGradients();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        UsingSpaceKey();
+        ChargeBoost();
+        LaunchShip();
 
-        InGravityField();
+        if (currentState == State.InGravityField)
+        {
+            InGravityField();
+        }
     }
 
     private void FixedUpdate()
     {
-        if (state == "orbital")
+        if (currentState == State.Orbiting)
         {
             OrbitAround();
         }
 
         RotateToMovingDirection();
 
-        if(state == "moving")
+        if (currentState == State.Moving)
         {
-            gameManager.GetComponent<GManager>().IncrementScore(Mathf.RoundToInt(rb2D.velocity.magnitude));
+            gameManager.GetComponent<GManager>().IncrementScore(Mathf.RoundToInt(rigidBody2D.velocity.magnitude));
         }
     }
 
@@ -88,13 +94,12 @@ public class Player : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if(other.gameObject.tag == "Planet" && superSlideCounter == 1)
+        if (other.gameObject.tag == "Planet" && superSlideCounter == 1)
         {
             var col = particleBoost.colorOverLifetime;
             col.color = boostGradientRed;
         }
     }
-
     #endregion
 
     #region Functions
@@ -102,7 +107,7 @@ public class Player : MonoBehaviour
     private void RotateToMovingDirection()
     //Rotate the player in the direction it is moving to
     {
-        moveDirection = rb2D.velocity;
+        Vector2 moveDirection = rigidBody2D.velocity;
         if (moveDirection != Vector2.zero)
         {
             float angle = Mathf.Atan2(moveDirection.y, moveDirection.x) * Mathf.Rad2Deg;
@@ -115,26 +120,26 @@ public class Player : MonoBehaviour
     {
         Vector3 dir = (orbitOrigin - transform.position);
         Vector3 cross = Vector3.Cross(dir, Vector3.forward).normalized;
-        rb2D.velocity = cross * movementSpeedModifier;
+        rigidBody2D.velocity = cross * movementSpeedModifier;
 
-        //to correct the imprecision of the orbiting code
+        //correct the imprecision of the previous orbiting code
         float diff = Vector2.Distance(orbitOrigin, transform.position) - distanceToOrbitingPlanet;
         transform.position += dir.normalized * diff;
     }
 
-    private void UsingSpaceKey()
-    // dictate what the space key is doing according to the situation
+    private void ChargeBoost()
+    // charges boost and updates the BoostSlider
     {
         if (Input.GetKey(KeyCode.Space))
         {
             //charges the timer
-            buttonTimer += Time.deltaTime;
+            boostButtonTimer += Time.deltaTime;
 
             //updates the BoostSlider and changes the color if needed
-            boostSlider.value = (Mathf.Clamp(buttonTimer - minTimer, 0, maxTimer) / maxTimer) * 100;
-            if (buttonTimer > maxTimer / 2)
+            boostSlider.value = (Mathf.Clamp(boostButtonTimer - minTimer, 0, maxTimer) / maxTimer) * 100;
+            if (boostButtonTimer > maxTimer / 2)
             {
-                if(buttonTimer > maxTimer/2)
+                if (boostButtonTimer > maxTimer / 2)
                 {
                     boostSliderFillImage.color = Color.cyan;
                     var col = particleBoost.colorOverLifetime;
@@ -142,17 +147,21 @@ public class Player : MonoBehaviour
                 }
             }
         }
+    }
 
+    private void LaunchShip()
+    //launches the ship out of orbit if it is
+    {
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            if (state == "orbital")
+            if (currentState == State.Orbiting)
             {
                 //launches the ship, going into moving state
-                state = "moving";
-                rb2D.AddForce(transform.right * Mathf.Clamp(buttonTimer, minTimer, maxTimer) * Mathf.Abs(movementSpeedModifier), ForceMode2D.Impulse);
+                currentState = State.Moving;
+                rigidBody2D.AddForce(transform.right * Mathf.Clamp(boostButtonTimer, minTimer, maxTimer) * Mathf.Abs(movementSpeedModifier), ForceMode2D.Impulse);
 
                 //add counters to the super slide counter if the value is high enough
-                if (buttonTimer > maxTimer / 2)
+                if (boostButtonTimer > maxTimer / 2)
                 {
                     superSlideCounter = 2;
                 }
@@ -160,7 +169,7 @@ public class Player : MonoBehaviour
 
             boostSlider.value = 0;
             boostSliderFillImage.color = Color.yellow;
-            buttonTimer = minTimer;
+            boostButtonTimer = minTimer;
         }
     }
 
@@ -172,21 +181,11 @@ public class Player : MonoBehaviour
         }
         else
         {
-            state = "in gravity field";
+            currentState = State.InGravityField;
             lastPlanet = nearPlanet;
             nearPlanet = other;
             orbitOrigin = nearPlanet.transform.position;
             lastDistanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
-
-            //decide the direction of the orbiting rotation around the planet, based on the position of the ship relative to the planet
-            if (Vector2.SignedAngle(rb2D.velocity, (transform.position - orbitOrigin)) > 0)
-            {
-                movementSpeedModifier = -Mathf.Abs(movementSpeedModifier);
-            }
-            else
-            {
-                movementSpeedModifier = Mathf.Abs(movementSpeedModifier);
-            }
 
             //manages the number of planets by destroying the last one and spawning other ones if necessary
             gameManager.GetComponent<GManager>().MaintainNumberOfPlanets(lastPlanet, gameManager.GetComponent<GManager>().numberOfPlanets);
@@ -201,33 +200,55 @@ public class Player : MonoBehaviour
             {
                 superSlideCounter = 0;
                 gameManager.GetComponent<GManager>().IncrementScore(4000);
+                DecideOrbitDirection();
             }
             else
             {
                 gameManager.GetComponent<GManager>().IncrementScore(500);
+                DecideOrbitDirection();
             }
+        }
+    }
+
+    private void DecideOrbitDirection()
+    //decide the direction of the orbiting rotation around the planet, based on the position of the ship relative to the planet
+    {
+        if (Vector2.SignedAngle(rigidBody2D.velocity, (transform.position - orbitOrigin)) > 0)
+        {
+            movementSpeedModifier = -Mathf.Abs(movementSpeedModifier);
+        }
+        else
+        {
+            movementSpeedModifier = Mathf.Abs(movementSpeedModifier);
         }
     }
 
     private void InGravityField()
     {
-        if (state == "in gravity field")
         // determine if the ship is going near or away the current planet
+        float distanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
+
+        if (distanceToPlanet > lastDistanceToPlanet && distanceToPlanet > 2 && superSlideCounter <= 0)
         {
-            float distanceToPlanet = Vector2.Distance(transform.position, orbitOrigin);
+            //enter orbital state if the conditions are met
+            rigidBody2D.velocity = Vector2.zero;
+            nearPlanet.GetComponent<PointEffector2D>().enabled = false;
+            distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
 
-            if (distanceToPlanet > lastDistanceToPlanet && distanceToPlanet > 2 && superSlideCounter <= 0)
-            {
-                //enter orbital state if the conditions are met
-                rb2D.velocity = Vector2.zero;
-                nearPlanet.GetComponent<PointEffector2D>().enabled = false;
-                distanceToOrbitingPlanet = Vector2.Distance(orbitOrigin, transform.position);
-
-                state = "orbital";
-            }
-
-            lastDistanceToPlanet = distanceToPlanet;
+            currentState = State.Orbiting;
         }
+
+        lastDistanceToPlanet = distanceToPlanet;
+    }
+
+    private void SetColoursForBoostParticlesGradients()
+    //set the colour gradients for the boost particles system
+    {
+        particleBoost = transform.GetChild(1).GetComponent<ParticleSystem>();
+        boostGradientRed = new Gradient();
+        boostGradientRed.SetKeys(new GradientColorKey[] { new GradientColorKey(new Color(1f, 0.63f, 0f), 0.0f), new GradientColorKey(new Color(0.94f, 0.82f, 0f), 20.0f), new GradientColorKey(new Color(0.89f, 1f, 0f), 50.0f) }, new GradientAlphaKey[] { });
+        boostGradientBlue = new Gradient();
+        boostGradientBlue.SetKeys(new GradientColorKey[] { new GradientColorKey(new Color(0.12f, 0f, 1f), 0.0f), new GradientColorKey(new Color(0.06f, 0.44f, 0.99f), 0.2f), new GradientColorKey(new Color(0.16f, 0.96f, 1f), 0.5f) }, new GradientAlphaKey[] { new GradientAlphaKey(1.0f, 0.0f), new GradientAlphaKey(1.0f, 1.0f) });
     }
     #endregion
 }

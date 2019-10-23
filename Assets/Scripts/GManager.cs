@@ -27,7 +27,6 @@ public class GManager : MonoBehaviour
     #endregion
 
     #region Unity's Functions
-    // Start is called before the first frame update
     void Start()
     {
         startingSizeOfPlanets = planetsToSpawn.GetComponent<CircleCollider2D>().radius;
@@ -39,7 +38,6 @@ public class GManager : MonoBehaviour
         MaintainNumberOfPlanets(null, numberOfPlanets);
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
@@ -110,6 +108,7 @@ public class GManager : MonoBehaviour
     }
 
     private IEnumerator ScoreUpdater()
+    //makes the visible score increment visibly on screen to match the actual score
     {
         while (true)
         {

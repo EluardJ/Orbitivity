@@ -25,7 +25,6 @@ public class Planet : MonoBehaviour
     #endregion
 
     #region Unity's Functions
-    // Start is called before the first frame update
     void Start()
     {
         GravityField = transform.GetChild(1).gameObject;
@@ -40,7 +39,6 @@ public class Planet : MonoBehaviour
         GravityField.GetComponent<SpriteRenderer>().color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
     }
 
-    // Update is called once per frame
     void Update()
     {
         GravityField.transform.Rotate(rotationVector);

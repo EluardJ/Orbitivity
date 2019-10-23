@@ -12,9 +12,6 @@ using TMPro;
 public class ScorePopup : MonoBehaviour
 {
     #region Variables
-    [SerializeField] private float duration = 2.0f;  
-
-    private float elapsedTime = 0;
     private TextMeshPro text;
     #endregion
 

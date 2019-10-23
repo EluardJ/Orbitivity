@@ -196,6 +196,7 @@ GameObject:
   m_Component:
   - component: {fileID: 42495912}
   - component: {fileID: 42495913}
+  - component: {fileID: 42495914}
   m_Layer: 5
   m_Name: BoostSlider
   m_TagString: Untagged
@@ -275,6 +276,18 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &42495914
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 42495911}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0e785035f93c95a45ba291dde0196b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &172247182
 GameObject:
   m_ObjectHideFlags: 0
@@ -851,7 +864,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
 --- !u!1001 &862259817
 PrefabInstance:
@@ -903,7 +916,7 @@ PrefabInstance:
     - target: {fileID: 8204779821841175179, guid: 65184df981f4798428af980e46523773,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 8204779821841175179, guid: 65184df981f4798428af980e46523773,
         type: 3}
@@ -1143,7 +1156,7 @@ PrefabInstance:
     - target: {fileID: 1099147261659368974, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 1099147261659368974, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0,
         type: 3}
@@ -1177,6 +1190,49 @@ PrefabInstance:
       objectReference: {fileID: 566695252}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 87b20fd3dfd1fb84c8edd5d9540dfae0, type: 3}
+--- !u!1 &1464784875
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1464784877}
+  - component: {fileID: 1464784876}
+  m_Layer: 0
+  m_Name: CustomEventsSystem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1464784876
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464784875}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 450eb3e42c5db904e97519ad9fe4b382, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1464784877
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1464784875}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 881.7345, y: 447.47607, z: -1208.75}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1511739147
 GameObject:
   m_ObjectHideFlags: 0
@@ -1255,7 +1311,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1597590627
 GameObject:
@@ -1358,11 +1414,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fce08d85d6494fa469999dcf13f845c2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numberOfPlanets: 5
   scoreText: {fileID: 520301153}
   gameOverText: {fileID: 172247184}
   planetsToSpawn: {fileID: 7823236567798082506, guid: 65184df981f4798428af980e46523773,
     type: 3}
+  numberOfPlanets: 5
 --- !u!4 &1993512025
 Transform:
   m_ObjectHideFlags: 0
@@ -1427,7 +1483,7 @@ PrefabInstance:
     - target: {fileID: 5102047523308479711, guid: d45945cc10afe8d47bfcf8232d1ff56c,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 5102047523308479711, guid: d45945cc10afe8d47bfcf8232d1ff56c,
         type: 3}

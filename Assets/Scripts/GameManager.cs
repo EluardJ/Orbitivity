@@ -10,13 +10,14 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-public class GManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     #region Variables
-    public int numberOfPlanets = 3;
     public Text scoreText;
     public Text gameOverText;
     public GameObject planetsToSpawn;
+
+    [SerializeField] private int numberOfPlanets = 3;
 
     private float startingSizeOfPlanets;
     private float currentSizeOfPlanets;
@@ -35,7 +36,11 @@ public class GManager : MonoBehaviour
         scoreText.text = "SCORE : " + score.ToString();
         StartCoroutine(ScoreUpdater());
 
-        MaintainNumberOfPlanets(null, numberOfPlanets);
+        MaintainNumbersOfPlanets(null);
+
+        GameEvents.current.onScoreIncrease += IncrementScore;
+        GameEvents.current.onNewPlanet += MaintainNumbersOfPlanets;
+        GameEvents.current.onGameOver += GameOver;
     }
 
     void Update()
@@ -86,7 +91,7 @@ public class GManager : MonoBehaviour
 
     }
 
-    public void MaintainNumberOfPlanets(GameObject lastPlanet, int nbr)
+    public void MaintainNumberOfPlanets(GameObject lastPlanet, int totalNumberOfPlanets)
     //remove the last planet and spawn another one if the count is low enough
     {
         if (lastPlanet != null)
@@ -95,10 +100,15 @@ public class GManager : MonoBehaviour
             lastPlanet.GetComponent<Planet>().DestroyPlanet();
         }
 
-        while (GameObject.FindGameObjectsWithTag("Planet").Length <= nbr)
+        while (GameObject.FindGameObjectsWithTag("Planet").Length <= totalNumberOfPlanets)
         {
             SpawnPlanetAtRandomPosition();
         }
+    }
+
+    public void MaintainNumbersOfPlanets(GameObject lastPlanet)
+    {
+        MaintainNumberOfPlanets(lastPlanet, numberOfPlanets);
     }
 
     public void IncrementScore(int numberToAdd)

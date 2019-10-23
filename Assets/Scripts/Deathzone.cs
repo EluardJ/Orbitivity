@@ -11,16 +11,14 @@ using UnityEngine;
 public class Deathzone : MonoBehaviour
 {
     #region Variables
-    public GameObject player;
-    public GameObject gameManager;
     #endregion
 
     #region Unity's Functions
     private void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.gameObject == player)
+        if (other.gameObject.tag == "Player")
         {
-            gameManager.GetComponent<GManager>().GameOver();
+            GameEvents.current.GameOver();
         }
     }
     #endregion

@@ -76,6 +76,8 @@ public class GameManager : MonoBehaviour
                 SceneManager.LoadScene("MainMenu");
             }
         }
+
+        Debug.Log(score);
     }
 
     private void OnDestroy()
@@ -155,9 +157,14 @@ public class GameManager : MonoBehaviour
                 displayScore += 100;
                 scoreText.text = "SCORE : " + displayScore.ToString();
             }
-            else if (displayScore < score)
+            else if(displayScore < score && (score - displayScore) > 10)
             {
                 displayScore += 10;
+                scoreText.text = "SCORE : " + displayScore.ToString();
+            }
+            else if (displayScore < score)
+            {
+                displayScore += 1;
                 scoreText.text = "SCORE : " + displayScore.ToString();
             }
             yield return new WaitForSeconds(0.01f);

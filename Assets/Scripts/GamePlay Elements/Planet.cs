@@ -14,12 +14,12 @@ public class Planet : MonoBehaviour
     public float currentSize;
     public float startingSize = 3.5f;
 
-    private float rotationSpeed = 0;
-    private Vector3 rotationVector;
-    private GameObject GravityField;
-    private GameObject PlanetSprite;
+    private GameObject gravityField;
+    private SpriteRenderer gravityFieldSprite;
+    private GameObject planetSprite;
     private bool isSpawning = true;
     private bool isBeingDestroyed = false;
+    private bool blinkingAnimation = true;
     private float lerpPlanet = 0.0f;
     private float lerpGravField;
     #endregion
@@ -27,20 +27,19 @@ public class Planet : MonoBehaviour
     #region Unity's Functions
     void Start()
     {
-        GravityField = transform.GetChild(1).gameObject;
-        PlanetSprite = transform.GetChild(0).gameObject;
+        gravityField = transform.GetChild(1).gameObject;
+        gravityFieldSprite = gravityField.GetComponent<SpriteRenderer>();
+        planetSprite = transform.GetChild(0).gameObject;
 
-        rotationSpeed = Random.Range(0, 50);
-        rotationVector = new Vector3(0, 0, rotationSpeed / 100);
-
-        GravityField.GetComponent<SpriteRenderer>().color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+        gravityField.GetComponent<SpriteRenderer>().color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
     }
 
     void Update()
     {
-        //GravityField.transform.Rotate(rotationVector);
-
         SpawnAnimation();
+
+        GravityFieldBlinkingAnimate();
+
         DestroyAnimation();
     }
 
@@ -76,15 +75,15 @@ public class Planet : MonoBehaviour
         if (isSpawning == true)
         {
             float ratio = currentSize / startingSize;
-            if (GravityField.transform.localScale.x != ratio)
+            if (gravityField.transform.localScale.x != ratio)
             {
                 lerpPlanet += 3.0f * Time.deltaTime;
                 float lerpedScale = Mathf.Lerp(0.0f, ratio, lerpPlanet);
-                PlanetSprite.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
+                planetSprite.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
 
                 lerpGravField += 2.0f * Time.deltaTime;
                 lerpedScale = Mathf.Lerp(0.0f, ratio, lerpGravField);
-                GravityField.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
+                gravityField.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
             }
             else
             {
@@ -106,14 +105,37 @@ public class Planet : MonoBehaviour
             float ratio = currentSize / startingSize;
             lerpPlanet += 3.0f * Time.deltaTime;
             float lerpedScale = Mathf.Lerp(ratio, 0.0f, lerpPlanet);
-            PlanetSprite.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
-            GravityField.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
+            planetSprite.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
+            gravityField.transform.localScale = new Vector3(lerpedScale, lerpedScale, 1);
 
-            if (GravityField.transform.localScale.x < 0.1f)
+            if (gravityField.transform.localScale.x < 0.1f)
             {
                 Destroy(gameObject);
             }
         }
+    }
+
+    private void GravityFieldBlinkingAnimate()
+    {
+        if(blinkingAnimation == true)
+        {
+            gravityFieldSprite.color = new Color(gravityFieldSprite.color.r, gravityFieldSprite.color.g, gravityFieldSprite.color.b, gravityFieldSprite.color.a - 0.5f * Time.deltaTime);
+
+            if(gravityFieldSprite.color.a < 0.3f)
+            {
+                blinkingAnimation = false;
+            }
+        }
+        else
+        {
+            gravityFieldSprite.color = new Color(gravityFieldSprite.color.r, gravityFieldSprite.color.g, gravityFieldSprite.color.b, gravityFieldSprite.color.a + 0.5f * Time.deltaTime);
+
+            if (gravityFieldSprite.color.a >= 1.0f)
+            {
+                blinkingAnimation = true;
+            }
+        }
+
     }
     #endregion
 }

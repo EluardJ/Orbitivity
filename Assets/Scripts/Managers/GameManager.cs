@@ -76,8 +76,6 @@ public class GameManager : MonoBehaviour
                 SceneManager.LoadScene("MainMenu");
             }
         }
-
-        Debug.Log(score);
     }
 
     private void OnDestroy()
@@ -126,7 +124,6 @@ public class GameManager : MonoBehaviour
     {
         if (lastPlanet != null)
         {
-            //Destroy(lastPlanet);
             lastPlanet.GetComponent<Planet>().DestroyPlanet();
         }
 
@@ -142,13 +139,12 @@ public class GameManager : MonoBehaviour
     }
 
     public void IncrementScore(int numberToAdd)
-    //increment and updates the score
     {
         score += numberToAdd;
     }
 
     private IEnumerator ScoreUpdater()
-    //makes the visible score increment visibly on screen to match the actual score
+    //makes the visible score increment visibly over time on screen to match the actual score
     {
         while (true)
         {
@@ -181,6 +177,8 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         currentState = State.GameOver;
+
+        AudioManager.current.Playsound("Explosion");
 
         if (score > PlayerPrefs.GetInt("HighScore", 0))
         {

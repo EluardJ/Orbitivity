@@ -165,8 +165,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentSize: 0
   startingSize: 3.5
-  scorePopup: {fileID: 8709147301449040780, guid: 3ad80f1f54eee0540b46cc7e9a1f8587,
-    type: 3}
+  spritesCollection:
+  - {fileID: 21300000, guid: bafc2a2af68473f43a52bbfd78502c7b, type: 3}
+  - {fileID: 21300000, guid: 41aac442cb1a932478df96fb5aee532c, type: 3}
+  - {fileID: 21300000, guid: 5cf37a0dbe967b14da8943953c53aa59, type: 3}
+  - {fileID: 21300000, guid: 7316e08726fd02745b920d87c8b185bf, type: 3}
+  - {fileID: 21300000, guid: ba12e254f7d86ec49a1f9271e6b88914, type: 3}
+  - {fileID: 21300000, guid: 8677e93c152aee446b5cadf5d13d9aa4, type: 3}
+  - {fileID: 21300000, guid: 78b70c28729e02f489b09d3d3f7275fd, type: 3}
+  - {fileID: 21300000, guid: 0f7072fdc6899f542ac1f8f95b34f358, type: 3}
+  - {fileID: 21300000, guid: 3ea1e3286a7f27047b7f12264b33f6b4, type: 3}
+  - {fileID: 21300000, guid: 399c5dfdc8c765948b3aa432f124a97d, type: 3}
+  - {fileID: 21300000, guid: 845bcd55661168a4e986e72d8232c2dd, type: 3}
 --- !u!1 &8161272537015939779
 GameObject:
   m_ObjectHideFlags: 0

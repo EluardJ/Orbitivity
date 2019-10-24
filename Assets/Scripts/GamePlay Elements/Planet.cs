@@ -14,6 +14,8 @@ public class Planet : MonoBehaviour
     public float currentSize;
     public float startingSize = 3.5f;
 
+    [SerializeField] private Sprite[] spritesCollection;
+
     private GameObject gravityField;
     private SpriteRenderer gravityFieldSprite;
     private GameObject planetSprite;
@@ -32,6 +34,7 @@ public class Planet : MonoBehaviour
         planetSprite = transform.GetChild(0).gameObject;
 
         gravityField.GetComponent<SpriteRenderer>().color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
+        planetSprite.GetComponent<SpriteRenderer>().sprite = spritesCollection[Random.Range(0, spritesCollection.Length)];
     }
 
     void Update()

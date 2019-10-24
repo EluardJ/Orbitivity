@@ -58,15 +58,8 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.R))
-        //restart the scene FOR TESTING PURPOSE
         {
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-
-        if (Input.GetKeyDown(KeyCode.S))
-        //spawns a planet at random position FOR TESTING PURPOSE
-        {
-            SpawnPlanetAtRandomPosition();
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -74,6 +67,14 @@ public class GameManager : MonoBehaviour
             if (currentState == State.GameOver)
             {
                 SceneManager.LoadScene("MainMenu");
+            }
+        }
+
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            if (currentState == State.GameOver)
+            {
+                SceneManager.LoadScene(SceneManager.GetActiveScene().name);
             }
         }
     }
@@ -104,7 +105,6 @@ public class GameManager : MonoBehaviour
             {
                 GameObject spawnedPlanet = Instantiate(planetsToSpawn, randomSpawnPosition, Quaternion.identity);
 
-                //set the planet at the right size and reduce the current size
                 spawnedPlanet.GetComponent<CircleCollider2D>().radius = currentSizeOfPlanets;
                 spawnedPlanet.GetComponent<Planet>().currentSize = currentSizeOfPlanets;
 
@@ -153,7 +153,7 @@ public class GameManager : MonoBehaviour
                 displayScore += 100;
                 scoreText.text = "SCORE : " + displayScore.ToString();
             }
-            else if(displayScore < score && (score - displayScore) > 10)
+            else if (displayScore < score && (score - displayScore) > 10)
             {
                 displayScore += 10;
                 scoreText.text = "SCORE : " + displayScore.ToString();

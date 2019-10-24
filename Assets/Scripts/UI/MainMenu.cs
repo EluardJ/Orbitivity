@@ -26,11 +26,13 @@ public class MainMenu : MonoBehaviour
     #region Functions
     public void LaunchGame()
     {
+        AudioManager.current.Playsound("Click");
         SceneManager.LoadScene("Game");
     }
 
     public void ResetHighScore()
     {
+        AudioManager.current.Playsound("Click");
         PlayerPrefs.SetInt("HighScore", 0);
         HighScoreText.text = PlayerPrefs.GetInt("HighScore", 0).ToString();
     }

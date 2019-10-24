@@ -93,9 +93,13 @@ public class Player : MonoBehaviour
     {
         if (other.gameObject.tag == "Planet" && superSlideCounter == 1)
         {
+            currentState = State.Moving;
+        }
+
+        if (other.gameObject.tag == "Planet" && superSlideCounter < 2)
+        {
             var col = particleBoost.colorOverLifetime;
             col.color = boostGradientRed;
-            currentState = State.Moving;
         }
     }
 
@@ -146,16 +150,13 @@ public class Player : MonoBehaviour
         if (Input.GetKey(KeyCode.Space))
         {
             boostButtonTimer += Time.deltaTime;
-
             GameEvents.current.SliderValueChange((Mathf.Clamp(boostButtonTimer - minTimer, 0, maxTimer) / maxTimer) * 100);
+
             if (boostButtonTimer > maxTimer / 2)
             {
-                if (boostButtonTimer > maxTimer / 2)
-                {
-                    GameEvents.current.SliderImageColorChange(Color.cyan);
-                    var col = particleBoost.colorOverLifetime;
-                    col.color = boostGradientBlue;
-                }
+                GameEvents.current.SliderImageColorChange(Color.cyan);
+                var col = particleBoost.colorOverLifetime;
+                col.color = boostGradientBlue;
             }
         }
     }
@@ -167,6 +168,7 @@ public class Player : MonoBehaviour
             if (currentState == State.Orbiting)
             {
                 currentState = State.Moving;
+                AudioManager.current.Playsound("LaunchShip");
                 rigidBody2D.AddForce(transform.right * Mathf.Clamp(boostButtonTimer, minTimer, maxTimer) * Mathf.Abs(movementSpeedModifier), ForceMode2D.Impulse);
 
                 if (boostButtonTimer > maxTimer / 2)
@@ -177,6 +179,11 @@ public class Player : MonoBehaviour
 
             GameEvents.current.SliderValueChange(0);
             GameEvents.current.SliderImageColorChange(Color.yellow);
+            if (superSlideCounter < 2)
+            {
+                var col = particleBoost.colorOverLifetime;
+                col.color = boostGradientRed;
+            }
             boostButtonTimer = minTimer;
         }
     }
@@ -208,18 +215,21 @@ public class Player : MonoBehaviour
             superSlideCounter--;
             GameEvents.current.ScoreIncrease(1000);
             GameEvents.current.InstantiateScorePopup(nearPlanet.transform, 1000, 1.5f);
+            AudioManager.current.Playsound("EnteringGravityField1");
         }
         else if (superSlideCounter == 1)
         {
             superSlideCounter = 0;
             GameEvents.current.ScoreIncrease(5000);
             GameEvents.current.InstantiateScorePopup(nearPlanet.transform, 5000, 2.0f);
+            AudioManager.current.Playsound("EnteringGravityField2");
             DecideOrbitDirection();
         }
         else
         {
             GameEvents.current.ScoreIncrease(1000);
             GameEvents.current.InstantiateScorePopup(nearPlanet.transform, 1000, 1.5f);
+            AudioManager.current.Playsound("EnteringGravityField1");
             DecideOrbitDirection();
         }
     }

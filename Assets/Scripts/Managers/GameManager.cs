@@ -14,7 +14,7 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
     #region Variables
-    [Header("Prefab References")]
+    [Header("Objects References")]
     public TextMeshProUGUI scoreText;
     public Text gameOverText;
     public GameObject planetsToSpawn;
@@ -22,6 +22,13 @@ public class GameManager : MonoBehaviour
 
     [Header("Values")]
     [SerializeField] private int numberOfPlanets = 3;
+
+    private enum State
+    {
+        InGame,
+        GameOver
+    }
+    private State currentState = State.InGame;
 
     private float startingSizeOfPlanets;
     private float currentSizeOfPlanets;
@@ -43,7 +50,7 @@ public class GameManager : MonoBehaviour
         MaintainNumbersOfPlanets(null);
 
         GameEvents.current.onScoreIncrease += IncrementScore;
-        GameEvents.current.onNewPlanet += MaintainNumbersOfPlanets;
+        GameEvents.current.onEnteringNewPlanet += MaintainNumbersOfPlanets;
         GameEvents.current.onGameOver += GameOver;
         GameEvents.current.onInstantiateScorePopup += InstantiateScorePopup;
     }
@@ -61,12 +68,20 @@ public class GameManager : MonoBehaviour
         {
             SpawnPlanetAtRandomPosition();
         }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            if (currentState == State.GameOver)
+            {
+                SceneManager.LoadScene("MainMenu");
+            }
+        }
     }
 
     private void OnDestroy()
     {
         GameEvents.current.onScoreIncrease -= IncrementScore;
-        GameEvents.current.onNewPlanet -= MaintainNumbersOfPlanets;
+        GameEvents.current.onEnteringNewPlanet -= MaintainNumbersOfPlanets;
         GameEvents.current.onGameOver -= GameOver;
         GameEvents.current.onInstantiateScorePopup -= InstantiateScorePopup;
     }
@@ -158,14 +173,16 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
+        currentState = State.GameOver;
+
         if (score > PlayerPrefs.GetInt("HighScore", 0))
         {
-            gameOverText.text = "GAME OVER\npress R to retry\nNEW HIGHSCORE : " + score.ToString() + "\n (old highscore = " + PlayerPrefs.GetInt("HighScore", 0).ToString() + ")";
+            gameOverText.text = "NEW HIGHSCORE : " + score.ToString() + "\n (old highscore = " + PlayerPrefs.GetInt("HighScore", 0).ToString() + ")";
             PlayerPrefs.SetInt("HighScore", score);
         }
         else
         {
-            gameOverText.text = "GAME OVER\npress R to retry\nscore : " + score.ToString() + "\n highscore = " + PlayerPrefs.GetInt("HighScore", 0).ToString();
+            gameOverText.text = "score : " + score.ToString() + "\n highscore = " + PlayerPrefs.GetInt("HighScore", 0).ToString();
         }
     }
     #endregion

@@ -24,55 +24,37 @@ public class GameEvents : MonoBehaviour
     public event Action<int> onScoreIncrease;
     public void ScoreIncrease(int number)
     {
-        if(onScoreIncrease != null)
-        {
-            onScoreIncrease(number);
-        }
+        onScoreIncrease?.Invoke(number);
     }
 
-    public event Action<GameObject> onNewPlanet;
-    public void NewPlanet(GameObject lastPlanet)
+    public event Action<GameObject> onEnteringNewPlanet;
+    public void EnteringNewPlanet(GameObject lastPlanet)
     {
-        if(onNewPlanet != null)
-        {
-            onNewPlanet(lastPlanet);
-        }
+        onEnteringNewPlanet?.Invoke(lastPlanet);
     }
 
     public event Action onGameOver;
     public void GameOver()
     {
-        if(onGameOver != null)
-        {
-            onGameOver();
-        }
+        onGameOver?.Invoke();
     }
 
     public event Action<float> onSliderChange;
     public void SliderValueChange(float number)
     {
-        if(onSliderChange != null)
-        {
-            onSliderChange(number);
-        }
+        onSliderChange?.Invoke(number);
     }
 
     public event Action<Color> onSliderImageColorChange;
     public void SliderImageColorChange(Color color)
     {
-        if(onSliderImageColorChange != null)
-        {
-            onSliderImageColorChange(color);
-        }
+        onSliderImageColorChange?.Invoke(color);
     }
 
     public event Action<Transform, int, float> onInstantiateScorePopup;
     public void InstantiateScorePopup(Transform position, int score, float size)
     {
-        if(onInstantiateScorePopup != null)
-        {
-            onInstantiateScorePopup(position, score, size);
-        }
+        onInstantiateScorePopup?.Invoke(position, score, size);
     }
     #endregion
 }

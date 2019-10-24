@@ -30,10 +30,7 @@ public class Planet : MonoBehaviour
         GravityField = transform.GetChild(1).gameObject;
         PlanetSprite = transform.GetChild(0).gameObject;
 
-        while (rotationSpeed == 0)
-        {
-            rotationSpeed = Random.Range(-50, 50);
-        }
+        rotationSpeed = Random.Range(0, 50);
         rotationVector = new Vector3(0, 0, rotationSpeed / 100);
 
         GravityField.GetComponent<SpriteRenderer>().color = Random.ColorHSV(0f, 1f, 1f, 1f, 0.5f, 1f);
@@ -41,7 +38,7 @@ public class Planet : MonoBehaviour
 
     void Update()
     {
-        GravityField.transform.Rotate(rotationVector);
+        //GravityField.transform.Rotate(rotationVector);
 
         SpawnAnimation();
         DestroyAnimation();

@@ -13,6 +13,7 @@ using UnityEngine.Audio;
 public class AudioManager : MonoBehaviour
 {
     #region Variables
+    public AudioMixerGroup audioMixerGroup;
     public Sound[] soundsCollection;
 
     public static AudioManager current;
@@ -42,6 +43,7 @@ public class AudioManager : MonoBehaviour
 
             sound.source.volume = sound.volume;
             sound.source.pitch = sound.pitch;
+            sound.source.outputAudioMixerGroup = audioMixerGroup;
         }
     }
 

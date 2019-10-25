@@ -165,7 +165,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentSize: 0
   startingSize: 3.5
-  spritesCollection:
+  spritesList:
   - {fileID: 21300000, guid: bafc2a2af68473f43a52bbfd78502c7b, type: 3}
   - {fileID: 21300000, guid: 41aac442cb1a932478df96fb5aee532c, type: 3}
   - {fileID: 21300000, guid: 5cf37a0dbe967b14da8943953c53aa59, type: 3}

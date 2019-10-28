@@ -1,4 +1,10 @@
-﻿using System.Collections;
+﻿#region Author
+/////////////////////////////////////////
+//   Judicaël Eluard
+/////////////////////////////////////////
+#endregion
+
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Audio;

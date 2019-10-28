@@ -150,8 +150,6 @@ public class Planet : MonoBehaviour
         new Color(1.0f, 1.0f, 0.0f),
         new Color(1.0f, 0.65f, 0.0f)};
 
-        Debug.Log(colorsList.Length);
-
         gravityField.GetComponent<SpriteRenderer>().color = colorsList[Random.Range(0, colorsList.Length)];
     }
     #endregion

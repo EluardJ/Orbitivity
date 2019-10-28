@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 8520701289243807465}
   - component: {fileID: 645529430165956629}
-  - component: {fileID: 3731814411902165433}
   m_Layer: 0
   m_Name: DeathZone
   m_TagString: Untagged
@@ -58,20 +57,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 35.614777, y: 1}
   m_EdgeRadius: 0
---- !u!114 &3731814411902165433
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 644527914786631189}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306ceaaa430c95b49be2f5b7ab17723d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  gameManager: {fileID: 0}
 --- !u!1 &2794176958835205998
 GameObject:
   m_ObjectHideFlags: 0
@@ -82,7 +67,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3266823551938161612}
   - component: {fileID: 6645374313364561668}
-  - component: {fileID: 3379894789610191740}
   m_Layer: 0
   m_Name: DeathZone (1)
   m_TagString: Untagged
@@ -130,20 +114,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 35.614777, y: 1}
   m_EdgeRadius: 0
---- !u!114 &3379894789610191740
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2794176958835205998}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306ceaaa430c95b49be2f5b7ab17723d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  gameManager: {fileID: 0}
 --- !u!1 &2985189418572266184
 GameObject:
   m_ObjectHideFlags: 0
@@ -188,7 +158,6 @@ GameObject:
   m_Component:
   - component: {fileID: 966772002417990307}
   - component: {fileID: 429320425676377833}
-  - component: {fileID: 5989795409623511093}
   m_Layer: 0
   m_Name: DeathZone (3)
   m_TagString: Untagged
@@ -236,20 +205,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.9259148, y: 23.167858}
   m_EdgeRadius: 0
---- !u!114 &5989795409623511093
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4966041973678231431}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306ceaaa430c95b49be2f5b7ab17723d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  gameManager: {fileID: 0}
 --- !u!1 &5485560367641687848
 GameObject:
   m_ObjectHideFlags: 0
@@ -260,7 +215,6 @@ GameObject:
   m_Component:
   - component: {fileID: 2569868582821588366}
   - component: {fileID: 8641653770921110707}
-  - component: {fileID: 4935311305319404135}
   m_Layer: 0
   m_Name: DeathZone (2)
   m_TagString: Untagged
@@ -308,17 +262,3 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1.9259148, y: 23.167858}
   m_EdgeRadius: 0
---- !u!114 &4935311305319404135
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5485560367641687848}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 306ceaaa430c95b49be2f5b7ab17723d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  player: {fileID: 0}
-  gameManager: {fileID: 0}

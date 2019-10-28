@@ -69,7 +69,7 @@ SpriteRenderer:
   m_SortingLayerID: 101235243
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: b36309910e2771c4486e67261f16c45a, type: 3}
+  m_Sprite: {fileID: 21300000, guid: f59282f4f376d0342a7e91a10cc84862, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -93,7 +93,7 @@ GameObject:
   - component: {fileID: 6848009695653134235}
   - component: {fileID: 2677939757017134106}
   m_Layer: 0
-  m_Name: BigPlanet
+  m_Name: Planet
   m_TagString: Planet
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -163,6 +163,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2999bc40ee5ca45458232aea005fdca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  currentSize: 0
+  startingSize: 3.5
+  spritesList:
+  - {fileID: 21300000, guid: bafc2a2af68473f43a52bbfd78502c7b, type: 3}
+  - {fileID: 21300000, guid: 41aac442cb1a932478df96fb5aee532c, type: 3}
+  - {fileID: 21300000, guid: 5cf37a0dbe967b14da8943953c53aa59, type: 3}
+  - {fileID: 21300000, guid: 7316e08726fd02745b920d87c8b185bf, type: 3}
+  - {fileID: 21300000, guid: ba12e254f7d86ec49a1f9271e6b88914, type: 3}
+  - {fileID: 21300000, guid: 8677e93c152aee446b5cadf5d13d9aa4, type: 3}
+  - {fileID: 21300000, guid: 78b70c28729e02f489b09d3d3f7275fd, type: 3}
+  - {fileID: 21300000, guid: 0f7072fdc6899f542ac1f8f95b34f358, type: 3}
+  - {fileID: 21300000, guid: 3ea1e3286a7f27047b7f12264b33f6b4, type: 3}
+  - {fileID: 21300000, guid: 399c5dfdc8c765948b3aa432f124a97d, type: 3}
+  - {fileID: 21300000, guid: 845bcd55661168a4e986e72d8232c2dd, type: 3}
 --- !u!1 &8161272537015939779
 GameObject:
   m_ObjectHideFlags: 0
@@ -232,12 +246,12 @@ SpriteRenderer:
   m_SortingLayerID: 101235243
   m_SortingLayer: 2
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7e4b8d304b1889349a4817a7b1ddcb6b, type: 3}
+  m_Sprite: {fileID: 21300000, guid: bafc2a2af68473f43a52bbfd78502c7b, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
+  m_Size: {x: 2, y: 2}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
